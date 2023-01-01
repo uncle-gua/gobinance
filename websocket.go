@@ -71,6 +71,7 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 					if err != nil {
 						errHandler(err)
 					}
+					continue
 				}
 
 				errHandler(err)
