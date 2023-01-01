@@ -1,6 +1,6 @@
 package delivery
 
-import "github.com/uncle-gua/gobinance/common"
+import "gobinance/common"
 
 // Ask is a type alias for PriceLevel.
 type Ask = common.PriceLevel

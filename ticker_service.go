@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/uncle-gua/gobinance/common"
+	"gobinance/common"
 )
 
 // ListBookTickersService list best price/qty on the order book for a symbol or symbols

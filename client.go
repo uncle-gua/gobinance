@@ -14,11 +14,14 @@ import (
 	"os"
 	"time"
 
+	"gobinance/common"
+
+	"gobinance/delivery"
+
+	"gobinance/futures"
+
 	"github.com/bitly/go-simplejson"
 	jsoniter "github.com/json-iterator/go"
-	"github.com/uncle-gua/gobinance/common"
-	"github.com/uncle-gua/gobinance/delivery"
-	"github.com/uncle-gua/gobinance/futures"
 )
 
 // SideType define side type of order
