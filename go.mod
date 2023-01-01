@@ -1,4 +1,4 @@
-module github.com/uncle-gua/go-binance/v2
+module github.com/uncle-gua/gobinance
 
 go 1.13
 

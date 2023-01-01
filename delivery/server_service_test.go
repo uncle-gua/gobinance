@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
-	"github.com/uncle-gua/go-binance/v2/common"
+	"github.com/uncle-gua/gobinance/common"
 )
 
 type serverServiceTestSuite struct {

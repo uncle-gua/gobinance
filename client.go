@@ -16,9 +16,9 @@ import (
 
 	"github.com/bitly/go-simplejson"
 	jsoniter "github.com/json-iterator/go"
-	"github.com/uncle-gua/go-binance/v2/common"
-	"github.com/uncle-gua/go-binance/v2/delivery"
-	"github.com/uncle-gua/go-binance/v2/futures"
+	"github.com/uncle-gua/gobinance/common"
+	"github.com/uncle-gua/gobinance/delivery"
+	"github.com/uncle-gua/gobinance/futures"
 )
 
 // SideType define side type of order
