@@ -7,18 +7,18 @@ import (
 	"crypto/sha256"
 	"crypto/tls"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"time"
 
-	"gobinance/common"
+	"github.com/uncle-gua/gobinance/common"
 
-	"gobinance/delivery"
+	"github.com/uncle-gua/gobinance/delivery"
 
-	"gobinance/futures"
+	"github.com/uncle-gua/gobinance/futures"
 
 	"github.com/bitly/go-simplejson"
 	jsoniter "github.com/json-iterator/go"
@@ -399,7 +399,7 @@ func (c *Client) callAPI(ctx context.Context, r *request, opts ...RequestOption)
 	if err != nil {
 		return []byte{}, err
 	}
-	data, err = ioutil.ReadAll(res.Body)
+	data, err = io.ReadAll(res.Body)
 	if err != nil {
 		return []byte{}, err
 	}

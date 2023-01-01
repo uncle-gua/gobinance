@@ -565,7 +565,7 @@ type WsDepthHandler func(event *WsDepthEvent)
 
 func wsPartialDepthServe(symbol string, levels int, rate *time.Duration, handler WsDepthHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
 	if levels != 5 && levels != 10 && levels != 20 {
-		return nil, nil, errors.New("Invalid levels")
+		return nil, nil, errors.New("invalid levels")
 	}
 	levelsStr := fmt.Sprintf("%d", levels)
 	return wsDepthServe(symbol, levelsStr, rate, handler, errHandler)
@@ -602,7 +602,7 @@ func wsDepthServe(symbol string, levels string, rate *time.Duration, handler WsD
 		case 100 * time.Millisecond:
 			rateStr = "@100ms"
 		default:
-			return nil, nil, errors.New("Invalid rate")
+			return nil, nil, errors.New("invalid rate")
 		}
 	}
 

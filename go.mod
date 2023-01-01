@@ -1,4 +1,4 @@
-module gobinance
+module github.com/uncle-gua/gobinance
 
 go 1.19
 

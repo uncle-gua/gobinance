@@ -39,14 +39,6 @@ func (r *request) setParam(key string, value interface{}) *request {
 	return r
 }
 
-// setParams set params with key/values to query string
-func (r *request) setParams(m params) *request {
-	for k, v := range m {
-		r.setParam(k, v)
-	}
-	return r
-}
-
 // setFormParam set param with key/value to request form body
 func (r *request) setFormParam(key string, value interface{}) *request {
 	if r.form == nil {
