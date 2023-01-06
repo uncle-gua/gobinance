@@ -61,11 +61,10 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 		for {
 			_, message, err := c.ReadMessage()
 			if err != nil {
+				if silent {
+					return
+				}
 				if websocket.IsCloseError(err) {
-					if silent {
-						return
-					}
-
 					errHandler(err)
 					c, _, err = Dialer.Dial(cfg.Endpoint, nil)
 					if err != nil {
