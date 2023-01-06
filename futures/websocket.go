@@ -56,15 +56,14 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 			c.Close()
 		}()
 		if WebsocketKeepalive {
-			// keepAlive(c, WebsocketTimeout, errHandler)
 			ticker := time.NewTicker(WebsocketTimeout)
 
 			go func() {
 				defer ticker.Stop()
-				if stop {
-					return
-				}
 				for {
+					if stop {
+						return
+					}
 					deadline := time.Now().Add(10 * time.Second)
 					err := c.WriteControl(websocket.PingMessage, []byte{}, deadline)
 					if err != nil {
