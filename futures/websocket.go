@@ -43,28 +43,44 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 		// websocket.Conn.ReadMessage or when the stopC channel is
 		// closed by the client.
 		defer close(doneC)
-		if WebsocketKeepalive {
-			keepAlive(c, WebsocketTimeout, errHandler)
-		}
 		// Wait for the stopC channel to be closed.  We do that in a
 		// separate goroutine because ReadMessage is a blocking
 		// operation.
-		silent := false
+		stop := false
 		go func() {
 			select {
 			case <-stopC:
-				silent = true
+				stop = true
 			case <-doneC:
 			}
 			c.Close()
 		}()
+		if WebsocketKeepalive {
+			ticker := time.NewTicker(WebsocketTimeout)
+
+			go func() {
+				defer ticker.Stop()
+				for {
+					if stop {
+						return
+					}
+					deadline := time.Now().Add(10 * time.Second)
+					err := c.WriteControl(websocket.PingMessage, []byte{}, deadline)
+					if err != nil {
+						errHandler(err)
+					}
+					<-ticker.C
+				}
+			}()
+		}
 		for {
 			_, message, err := c.ReadMessage()
 			if err != nil {
-				if silent {
-					return
-				}
 				if websocket.IsCloseError(err) {
+					if stop {
+						return
+					}
+
 					errHandler(err)
 					c, _, err = Dialer.Dial(cfg.Endpoint, nil)
 					if err != nil {
