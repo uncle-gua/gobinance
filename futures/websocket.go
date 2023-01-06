@@ -55,27 +55,27 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 			}
 			c.Close()
 		}()
-		if WebsocketKeepalive {
-			ticker := time.NewTicker(WebsocketTimeout)
+		// if WebsocketKeepalive {
+		// 	ticker := time.NewTicker(WebsocketTimeout)
 
-			go func() {
-				defer ticker.Stop()
-				for {
-					if stop {
-						return
-					}
-					deadline := time.Now().Add(10 * time.Second)
-					err := c.WriteControl(websocket.PingMessage, []byte{}, deadline)
-					if err != nil {
-						if stop {
-							return
-						}
-						errHandler(err)
-					}
-					<-ticker.C
-				}
-			}()
-		}
+		// 	go func() {
+		// 		defer ticker.Stop()
+		// 		for {
+		// 			if stop {
+		// 				return
+		// 			}
+		// 			deadline := time.Now().Add(10 * time.Second)
+		// 			err := c.WriteControl(websocket.PingMessage, []byte{}, deadline)
+		// 			if err != nil {
+		// 				if stop {
+		// 					return
+		// 				}
+		// 				errHandler(err)
+		// 			}
+		// 			<-ticker.C
+		// 		}
+		// 	}()
+		// }
 		for {
 			if stop {
 				return
