@@ -61,9 +61,6 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 			go func() {
 				defer ticker.Stop()
 				for {
-					if stop {
-						return
-					}
 					deadline := time.Now().Add(10 * time.Second)
 					err := c.WriteControl(websocket.PingMessage, []byte{}, deadline)
 					if err != nil {
@@ -77,9 +74,6 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 			}()
 		}
 		for {
-			if stop {
-				return
-			}
 			_, message, err := c.ReadMessage()
 			if err != nil {
 				if stop {
