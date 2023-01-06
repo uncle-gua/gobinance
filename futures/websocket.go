@@ -1,7 +1,6 @@
 package futures
 
 import (
-	"log"
 	"net/http"
 	"time"
 
@@ -54,17 +53,14 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 		go func() {
 			select {
 			case <-stopC:
-				log.Print("stopC")
 				stop = true
 			case <-doneC:
-				log.Print("doneC")
 			}
 			c.Close()
 		}()
 		for {
 			_, message, err := c.ReadMessage()
 			if err != nil {
-				log.Print(err)
 				if stop {
 					return
 				}
