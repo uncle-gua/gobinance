@@ -1,6 +1,7 @@
 package futures
 
 import (
+	"log"
 	"net/http"
 	"time"
 
@@ -49,19 +50,22 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 		// Wait for the stopC channel to be closed.  We do that in a
 		// separate goroutine because ReadMessage is a blocking
 		// operation.
-		silent := false
+		stop := false
 		go func() {
 			select {
 			case <-stopC:
-				silent = true
+				log.Print("stopC")
+				stop = true
 			case <-doneC:
+				log.Print("doneC")
 			}
 			c.Close()
 		}()
 		for {
 			_, message, err := c.ReadMessage()
 			if err != nil {
-				if silent {
+				log.Print(err)
+				if stop {
 					return
 				}
 				if websocket.IsCloseError(err) {
