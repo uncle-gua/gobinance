@@ -67,6 +67,9 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 					deadline := time.Now().Add(10 * time.Second)
 					err := c.WriteControl(websocket.PingMessage, []byte{}, deadline)
 					if err != nil {
+						if stop {
+							return
+						}
 						errHandler(err)
 					}
 					<-ticker.C
@@ -74,13 +77,15 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 			}()
 		}
 		for {
+			if stop {
+				return
+			}
 			_, message, err := c.ReadMessage()
 			if err != nil {
+				if stop {
+					return
+				}
 				if websocket.IsCloseError(err) {
-					if stop {
-						return
-					}
-
 					errHandler(err)
 					c, _, err = Dialer.Dial(cfg.Endpoint, nil)
 					if err != nil {
