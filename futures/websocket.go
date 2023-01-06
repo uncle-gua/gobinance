@@ -49,11 +49,11 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 		// Wait for the stopC channel to be closed.  We do that in a
 		// separate goroutine because ReadMessage is a blocking
 		// operation.
-		stop := false
+		silent := false
 		go func() {
 			select {
 			case <-stopC:
-				stop = true
+				silent = true
 			case <-doneC:
 			}
 			c.Close()
@@ -61,7 +61,7 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 		for {
 			_, message, err := c.ReadMessage()
 			if err != nil {
-				if stop {
+				if silent {
 					return
 				}
 				if websocket.IsCloseError(err) {
