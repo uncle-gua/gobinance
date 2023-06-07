@@ -1,8 +1,6 @@
 package futures
 
-import (
-	"github.com/uncle-gua/wsc"
-)
+import "github.com/uncle-gua/wsc"
 
 // WsHandler handle raw websocket message
 type WsHandler func(message []byte)

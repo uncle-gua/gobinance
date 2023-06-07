@@ -14,5 +14,7 @@ require (
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/panjf2000/ants/v2 v2.7.4 // indirect
 	github.com/togettoyou/wsc v1.3.1 // indirect
+	github.com/uncle-gua/wsc v0.0.0-20230607192913-877e3ba4b463 // indirect
 )
