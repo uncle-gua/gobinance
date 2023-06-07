@@ -25,6 +25,8 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 	go func() {
 		ws := wsc.New(cfg.Endpoint)
 		ws.OnTextMessageReceived(handler)
+		ws.OnConnectError(errHandler)
+		ws.OnSentError(errHandler)
 		ws.Connect()
 		for range done {
 			ws.Close()
