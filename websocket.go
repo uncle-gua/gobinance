@@ -36,8 +36,10 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 		return nil, nil, err
 	}
 	c.SetReadLimit(655350)
+
 	doneC = make(chan struct{})
 	stopC = make(chan struct{})
+
 	go func() {
 		// This function will exit either on error from
 		// websocket.Conn.ReadMessage or when the stopC channel is
@@ -46,7 +48,9 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 		// Wait for the stopC channel to be closed.  We do that in a
 		// separate goroutine because ReadMessage is a blocking
 		// operation.
+
 		stop := false
+
 		go func() {
 			select {
 			case <-stopC:
@@ -55,14 +59,14 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 			}
 			c.Close()
 		}()
+
 		if WebsocketKeepalive {
 			ticker := time.NewTicker(WebsocketTimeout)
-
 			go func() {
 				defer ticker.Stop()
 				for {
 					deadline := time.Now().Add(10 * time.Second)
-					err := c.WriteControl(websocket.PingMessage, []byte{}, deadline)
+					err := c.WriteControl(websocket.PongMessage, []byte{}, deadline)
 					if err != nil {
 						if stop {
 							return
@@ -81,9 +85,13 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 				}
 				errHandler(err)
 				if websocket.IsCloseError(err) {
-					c, _, err = Dialer.Dial(cfg.Endpoint, nil)
-					if err != nil {
-						errHandler(err)
+					for {
+						c, _, err = Dialer.Dial(cfg.Endpoint, nil)
+						if err != nil {
+							errHandler(err)
+						} else {
+							break
+						}
 					}
 				}
 				continue
