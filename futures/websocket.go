@@ -2,6 +2,7 @@ package futures
 
 import (
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -24,71 +25,33 @@ func newWsConfig(endpoint string) *WsConfig {
 	}
 }
 
-var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (doneC, stopC chan struct{}, err error) {
-	Dialer := websocket.Dialer{
-		Proxy:             http.ProxyFromEnvironment,
-		HandshakeTimeout:  45 * time.Second,
-		EnableCompression: false,
-	}
+var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (done chan struct{}, err error) {
+	done = make(chan struct{})
 
-	c, _, err := Dialer.Dial(cfg.Endpoint, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-	c.SetReadLimit(655350)
-	doneC = make(chan struct{})
-	stopC = make(chan struct{})
 	go func() {
-		// This function will exit either on error from
-		// websocket.Conn.ReadMessage or when the stopC channel is
-		// closed by the client.
-		defer close(doneC)
-		// Wait for the stopC channel to be closed.  We do that in a
-		// separate goroutine because ReadMessage is a blocking
-		// operation.
-		stop := false
-		go func() {
-			select {
-			case <-stopC:
-				stop = true
-			case <-doneC:
-			}
-			c.Close()
-		}()
-		if WebsocketKeepalive {
-			ticker := time.NewTicker(WebsocketTimeout)
-
-			go func() {
-				defer ticker.Stop()
-				for {
-					deadline := time.Now().Add(10 * time.Second)
-					err := c.WriteControl(websocket.PingMessage, []byte{}, deadline)
-					if err != nil {
-						if stop {
-							return
-						}
-						errHandler(err)
-					}
-					<-ticker.C
-				}
-			}()
+		ws := &Wsc{
+			Config: &Config{
+				WriteWait:         10 * time.Second,
+				MaxMessageSize:    512,
+				MinRecTime:        2 * time.Second,
+				MaxRecTime:        60 * time.Second,
+				RecFactor:         1.5,
+				MessageBufferSize: 256,
+			},
+			WebSocket: &WebSocket{
+				Url:           cfg.Endpoint,
+				Dialer:        websocket.DefaultDialer,
+				RequestHeader: http.Header{},
+				isConnected:   false,
+				connMu:        &sync.RWMutex{},
+				sendMu:        &sync.Mutex{},
+			},
 		}
-		for {
-			_, message, err := c.ReadMessage()
-			if err != nil {
-				if stop {
-					return
-				}
-				errHandler(err)
-				if websocket.IsCloseError(err) {
-					c, _, err = Dialer.Dial(cfg.Endpoint, nil)
-					if err != nil {
-						errHandler(err)
-					}
-				}
-				continue
-			}
-			handler(message)
+		ws.OnTextMessageReceived(handler)
+		ws.Connect()
+		for range done {
+			ws.Close()
+			return
 		}
 	}()
 	return
