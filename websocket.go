@@ -26,25 +26,31 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler, info
 	done = make(chan struct{})
 
 	go func() {
+		info := func(format string, a ...any) {
+			if infoHandler != nil {
+				infoHandler(format, a...)
+			}
+		}
+
 		ws := wsc.New(cfg.Endpoint)
 		ws.OnConnected(func() {
-			infoHandler("websocket connected")
+			info("websocket connected")
 		})
 		ws.OnConnectError(errHandler)
 		ws.OnDisconnected(errHandler)
 		ws.OnClose(func(code int, text string) {
-			infoHandler("websocket closed, code: %d, message: %s", code, text)
+			info("websocket closed, code: %d, message: %s", code, text)
 		})
 		ws.OnSentError(errHandler)
 		ws.OnPingReceived(func(appData string) {
-			infoHandler(appData)
+			info(appData)
 		})
 		ws.OnPongReceived(func(appData string) {
-			infoHandler(appData)
+			info(appData)
 		})
 		ws.OnTextMessageReceived(handler)
 		ws.OnKeepalive(func() {
-			infoHandler("websocket keepalive")
+			info("websocket keepalive")
 		})
 		ws.Connect()
 		for range done {
