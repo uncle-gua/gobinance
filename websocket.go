@@ -8,8 +8,14 @@ type WsHandler func(message []byte)
 // ErrHandler handles errors
 type ErrHandler func(err error)
 
-// InfoHandler handles informations
-type InfoHandler func(format string, a ...any)
+type Logger struct {
+	OnConnected    bool
+	OnClose        bool
+	OnPingReceived bool
+	OnPongReceived bool
+	OnKeepalive    bool
+	Log            func(format string, a ...any)
+}
 
 // WsConfig webservice configuration
 type WsConfig struct {
@@ -22,35 +28,39 @@ func newWsConfig(endpoint string) *WsConfig {
 	}
 }
 
-var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler, infoHandler InfoHandler) (done chan struct{}, err error) {
+var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler, logger *Logger) (done chan struct{}, err error) {
 	done = make(chan struct{})
 
 	go func() {
-		info := func(format string, a ...any) {
-			if infoHandler != nil {
-				infoHandler(format, a...)
-			}
-		}
-
 		ws := wsc.New(cfg.Endpoint)
 		ws.OnConnected(func() {
-			info("websocket connected")
+			if logger != nil && logger.OnConnected {
+				logger.Log("websocket connected")
+			}
 		})
 		ws.OnConnectError(errHandler)
 		ws.OnDisconnected(errHandler)
 		ws.OnClose(func(code int, text string) {
-			info("websocket closed, code: %d, message: %s", code, text)
+			if logger != nil && logger.OnClose {
+				logger.Log("websocket closed, code: %d, message: %s", code, text)
+			}
 		})
 		ws.OnSentError(errHandler)
 		ws.OnPingReceived(func(appData string) {
-			info(appData)
+			if logger != nil && logger.OnPingReceived {
+				logger.Log("ping received, data: %s", appData)
+			}
 		})
 		ws.OnPongReceived(func(appData string) {
-			info(appData)
+			if logger != nil && logger.OnPingReceived {
+				logger.Log("pong received, data: %s", appData)
+			}
 		})
 		ws.OnTextMessageReceived(handler)
 		ws.OnKeepalive(func() {
-			info("websocket keepalive")
+			if logger != nil && logger.OnPingReceived {
+				logger.Log("keep alive")
+			}
 		})
 		ws.Connect()
 		for range done {
