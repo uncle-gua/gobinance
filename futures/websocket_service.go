@@ -43,16 +43,16 @@ func getCombinedEndpoint() string {
 
 // WsAggTradeEvent define websocket aggTrde event.
 type WsAggTradeEvent struct {
-	Event            string `json:"e"`
-	Time             int64  `json:"E"`
-	Symbol           string `json:"s"`
-	AggregateTradeID int64  `json:"a"`
-	Price            string `json:"p"`
-	Quantity         string `json:"q"`
-	FirstTradeID     int64  `json:"f"`
-	LastTradeID      int64  `json:"l"`
-	TradeTime        int64  `json:"T"`
-	Maker            bool   `json:"m"`
+	Event            string  `json:"e"`
+	Time             int64   `json:"E"`
+	Symbol           string  `json:"s"`
+	AggregateTradeID int64   `json:"a"`
+	Price            float64 `json:"p,string"`
+	Quantity         float64 `json:"q,string"`
+	FirstTradeID     int64   `json:"f"`
+	LastTradeID      int64   `json:"l"`
+	TradeTime        int64   `json:"T"`
+	Maker            bool    `json:"m"`
 }
 
 // WsAggTradeHandler handle websocket that push trade information that is aggregated for a single taker order.
