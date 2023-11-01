@@ -610,38 +610,12 @@ func wsDepthServe(symbol string, levels string, rate *time.Duration, handler WsD
 	cfg := newWsConfig(endpoint)
 
 	wsHandler := func(message []byte) {
-		j, err := newJSON(message)
-		if err != nil {
+		event := new(WsDepthEvent)
+		if err := json.Unmarshal(message, event); err != nil {
 			errHandler(err)
 			return
 		}
-		event := new(WsDepthEvent)
-		event.Event = j.Get("e").MustString()
-		event.Time = j.Get("E").MustInt64()
-		event.TransactionTime = j.Get("T").MustInt64()
-		event.Symbol = j.Get("s").MustString()
-		event.Pair = j.Get("ps").MustString()
-		event.FirstUpdateID = j.Get("U").MustInt64()
-		event.LastUpdateID = j.Get("u").MustInt64()
-		event.PrevLastUpdateID = j.Get("pu").MustInt64()
-		bidsLen := len(j.Get("b").MustArray())
-		event.Bids = make([]Bid, bidsLen)
-		for i := 0; i < bidsLen; i++ {
-			item := j.Get("b").GetIndex(i)
-			event.Bids[i] = Bid{
-				Price:    item.GetIndex(0).MustString(),
-				Quantity: item.GetIndex(1).MustString(),
-			}
-		}
-		asksLen := len(j.Get("a").MustArray())
-		event.Asks = make([]Ask, asksLen)
-		for i := 0; i < asksLen; i++ {
-			item := j.Get("a").GetIndex(i)
-			event.Asks[i] = Ask{
-				Price:    item.GetIndex(0).MustString(),
-				Quantity: item.GetIndex(1).MustString(),
-			}
-		}
+
 		handler(event)
 	}
 	return wsServe(cfg, wsHandler, errHandler)

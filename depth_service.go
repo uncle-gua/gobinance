@@ -40,30 +40,12 @@ func (s *DepthService) Do(ctx context.Context, opts ...RequestOption) (res *Dept
 	if err != nil {
 		return nil, err
 	}
-	j, err := newJSON(data)
-	if err != nil {
+	res = new(DepthResponse)
+	err = json.Unmarshal(data, res)
+	if err := json.Unmarshal(data, res); err != nil {
 		return nil, err
 	}
-	res = new(DepthResponse)
-	res.LastUpdateID = j.Get("lastUpdateId").MustInt64()
-	bidsLen := len(j.Get("bids").MustArray())
-	res.Bids = make([]Bid, bidsLen)
-	for i := 0; i < bidsLen; i++ {
-		item := j.Get("bids").GetIndex(i)
-		res.Bids[i] = Bid{
-			Price:    item.GetIndex(0).MustString(),
-			Quantity: item.GetIndex(1).MustString(),
-		}
-	}
-	asksLen := len(j.Get("asks").MustArray())
-	res.Asks = make([]Ask, asksLen)
-	for i := 0; i < asksLen; i++ {
-		item := j.Get("asks").GetIndex(i)
-		res.Asks[i] = Ask{
-			Price:    item.GetIndex(0).MustString(),
-			Quantity: item.GetIndex(1).MustString(),
-		}
-	}
+
 	return res, nil
 }
 

@@ -1,25 +1,51 @@
 package common
 
-import "strconv"
+import (
+	"encoding/json"
+	"errors"
+	"strconv"
+)
 
 // PriceLevel is a common structure for bids and asks in the
 // order book.
+
+var ErrPriceLevel = errors.New("failed to parse price level")
+
 type PriceLevel struct {
-	Price    string
-	Quantity string
+	Price    float64
+	Quantity float64
 }
 
-// Parse parses this PriceLevel's Price and Quantity and
-// returns them both.  It also returns an error if either
-// fails to parse.
-func (p *PriceLevel) Parse() (float64, float64, error) {
-	price, err := strconv.ParseFloat(p.Price, 64)
-	if err != nil {
-		return 0, 0, err
+func (p *PriceLevel) UnmarshalJSON(data []byte) error {
+	var items []string
+	if err := json.Unmarshal(data, &items); err != nil {
+		return err
 	}
-	quantity, err := strconv.ParseFloat(p.Quantity, 64)
-	if err != nil {
-		return price, 0, err
+
+	if len(items) != 2 {
+		return ErrPriceLevel
 	}
-	return price, quantity, nil
+
+	price, err := strconv.ParseFloat(items[0], 64)
+	if err != nil {
+		return err
+	}
+
+	Quantity, err := strconv.ParseFloat(items[1], 64)
+	if err != nil {
+		return err
+	}
+
+	p.Price = price
+	p.Quantity = Quantity
+
+	return nil
+}
+
+func (p *PriceLevel) MarshalJSON() ([]byte, error) {
+	items := [2]string{}
+	items[0] = strconv.FormatFloat(p.Price, 'f', -1, 64)
+	items[1] = strconv.FormatFloat(p.Quantity, 'f', -1, 64)
+
+	return json.Marshal(items)
 }
