@@ -5,7 +5,6 @@ import (
 	"context"
 	"crypto/hmac"
 	"crypto/sha256"
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -14,9 +13,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/uncle-gua/gobinance/common"
-
 	"github.com/bitly/go-simplejson"
+	jsoniter "github.com/json-iterator/go"
+	"github.com/uncle-gua/gobinance/common"
 )
 
 // SideType define side type of order
@@ -63,6 +62,9 @@ type UserDataEventType string
 
 // UserDataEventReasonType define reason type for user data event
 type UserDataEventReasonType string
+
+// Redefining the standard package
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 // Endpoints
 const (

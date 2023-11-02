@@ -2,7 +2,7 @@ package futures
 
 import (
 	"context"
-	"encoding/json"
+	stdjson "encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -877,7 +877,7 @@ func (s *CreateBatchOrdersService) Do(ctx context.Context, opts ...RequestOption
 		return &CreateBatchOrdersResponse{}, err
 	}
 
-	rawMessages := make([]*json.RawMessage, 0)
+	rawMessages := make([]*stdjson.RawMessage, 0)
 
 	err = json.Unmarshal(data, &rawMessages)
 

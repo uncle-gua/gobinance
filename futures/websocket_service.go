@@ -1,7 +1,6 @@
 package futures
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"

@@ -2,7 +2,6 @@ package futures
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 
 	"github.com/uncle-gua/gobinance/common"
@@ -43,11 +42,8 @@ func (s *DepthService) Do(ctx context.Context, opts ...RequestOption) (res *Dept
 	}
 
 	res = new(DepthResponse)
-	if err := json.Unmarshal(data, res); err != nil {
-		return nil, err
-	}
-
-	return res, nil
+	json.Unmarshal(data, res)
+	return res, err
 }
 
 // DepthResponse define depth info with bids and asks
