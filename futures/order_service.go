@@ -203,21 +203,21 @@ type CreateOrderResponse struct {
 	Symbol            string           `json:"symbol"`
 	OrderID           int64            `json:"orderId"`
 	ClientOrderID     string           `json:"clientOrderId"`
-	Price             string           `json:"price"`
-	OrigQuantity      string           `json:"origQty"`
-	ExecutedQuantity  string           `json:"executedQty"`
-	CumQuote          string           `json:"cumQuote"`
+	Price             float64          `json:"price,string"`
+	OrigQuantity      float64          `json:"origQty,string"`
+	ExecutedQuantity  float64          `json:"executedQty,string"`
+	CumQuote          float64          `json:"cumQuote,string"`
 	ReduceOnly        bool             `json:"reduceOnly"`
 	Status            OrderStatusType  `json:"status"`
-	StopPrice         string           `json:"stopPrice"`
+	StopPrice         float64          `json:"stopPrice,string"`
 	TimeInForce       TimeInForceType  `json:"timeInForce"`
 	Type              OrderType        `json:"type"`
 	Side              SideType         `json:"side"`
 	UpdateTime        int64            `json:"updateTime"`
 	WorkingType       WorkingType      `json:"workingType"`
-	ActivatePrice     string           `json:"activatePrice"`
-	PriceRate         string           `json:"priceRate"`
-	AvgPrice          string           `json:"avgPrice"`
+	ActivatePrice     float64          `json:"activatePrice,string"`
+	PriceRate         float64          `json:"priceRate,string"`
+	AvgPrice          float64          `json:"avgPrice,string"`
 	PositionSide      PositionSideType `json:"positionSide"`
 	ClosePosition     bool             `json:"closePosition"`
 	PriceProtect      bool             `json:"priceProtect"`
@@ -367,23 +367,23 @@ type Order struct {
 	Symbol           string           `json:"symbol"`
 	OrderID          int64            `json:"orderId"`
 	ClientOrderID    string           `json:"clientOrderId"`
-	Price            string           `json:"price"`
+	Price            float64          `json:"price,string"`
 	ReduceOnly       bool             `json:"reduceOnly"`
-	OrigQuantity     string           `json:"origQty"`
-	ExecutedQuantity string           `json:"executedQty"`
-	CumQuantity      string           `json:"cumQty"`
-	CumQuote         string           `json:"cumQuote"`
+	OrigQuantity     float64          `json:"origQty,string"`
+	ExecutedQuantity float64          `json:"executedQty,string"`
+	CumQuantity      float64          `json:"cumQty,string"`
+	CumQuote         float64          `json:"cumQuote,string"`
 	Status           OrderStatusType  `json:"status"`
 	TimeInForce      TimeInForceType  `json:"timeInForce"`
 	Type             OrderType        `json:"type"`
 	Side             SideType         `json:"side"`
-	StopPrice        string           `json:"stopPrice"`
+	StopPrice        float64          `json:"stopPrice,string"`
 	Time             int64            `json:"time"`
 	UpdateTime       int64            `json:"updateTime"`
 	WorkingType      WorkingType      `json:"workingType"`
-	ActivatePrice    string           `json:"activatePrice"`
-	PriceRate        string           `json:"priceRate"`
-	AvgPrice         string           `json:"avgPrice"`
+	ActivatePrice    float64          `json:"activatePrice,string"`
+	PriceRate        float64          `json:"priceRate,string"`
+	AvgPrice         float64          `json:"avgPrice,string"`
 	OrigType         string           `json:"origType"`
 	PositionSide     PositionSideType `json:"positionSide"`
 	PriceProtect     bool             `json:"priceProtect"`
@@ -452,14 +452,10 @@ func (s *ListOrdersService) Do(ctx context.Context, opts ...RequestOption) (res 
 	}
 	data, _, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
-		return []*Order{}, err
+		return res, err
 	}
-	res = make([]*Order, 0)
 	err = json.Unmarshal(data, &res)
-	if err != nil {
-		return []*Order{}, err
-	}
-	return res, nil
+	return res, err
 }
 
 // CancelOrderService cancel an order
@@ -517,23 +513,23 @@ func (s *CancelOrderService) Do(ctx context.Context, opts ...RequestOption) (res
 // CancelOrderResponse define response of canceling order
 type CancelOrderResponse struct {
 	ClientOrderID    string           `json:"clientOrderId"`
-	CumQuantity      string           `json:"cumQty"`
-	CumQuote         string           `json:"cumQuote"`
-	ExecutedQuantity string           `json:"executedQty"`
+	CumQuantity      float64          `json:"cumQty,string"`
+	CumQuote         float64          `json:"cumQuote,string"`
+	ExecutedQuantity float64          `json:"executedQty,string"`
 	OrderID          int64            `json:"orderId"`
-	OrigQuantity     string           `json:"origQty"`
-	Price            string           `json:"price"`
+	OrigQuantity     float64          `json:"origQty,string"`
+	Price            float64          `json:"price,string"`
 	ReduceOnly       bool             `json:"reduceOnly"`
 	Side             SideType         `json:"side"`
 	Status           OrderStatusType  `json:"status"`
-	StopPrice        string           `json:"stopPrice"`
+	StopPrice        float64          `json:"stopPrice,string"`
 	Symbol           string           `json:"symbol"`
 	TimeInForce      TimeInForceType  `json:"timeInForce"`
 	Type             OrderType        `json:"type"`
 	UpdateTime       int64            `json:"updateTime"`
 	WorkingType      WorkingType      `json:"workingType"`
-	ActivatePrice    string           `json:"activatePrice"`
-	PriceRate        string           `json:"priceRate"`
+	ActivatePrice    float64          `json:"activatePrice,string"`
+	PriceRate        float64          `json:"priceRate,string"`
 	OrigType         string           `json:"origType"`
 	PositionSide     PositionSideType `json:"positionSide"`
 	PriceProtect     bool             `json:"priceProtect"`
@@ -610,14 +606,10 @@ func (s *CancelMultiplesOrdersService) Do(ctx context.Context, opts ...RequestOp
 	}
 	data, _, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
-		return nil, err
+		return res, err
 	}
-	res = make([]*CancelOrderResponse, 0)
 	err = json.Unmarshal(data, &res)
-	if err != nil {
-		return []*CancelOrderResponse{}, err
-	}
-	return res, nil
+	return res, err
 }
 
 // ListLiquidationOrdersService list liquidation orders
@@ -687,10 +679,10 @@ func (s *ListLiquidationOrdersService) Do(ctx context.Context, opts ...RequestOp
 // LiquidationOrder define liquidation order
 type LiquidationOrder struct {
 	Symbol           string          `json:"symbol"`
-	Price            string          `json:"price"`
-	OrigQuantity     string          `json:"origQty"`
-	ExecutedQuantity string          `json:"executedQty"`
-	AveragePrice     string          `json:"avragePrice"`
+	Price            float64         `json:"price,string"`
+	OrigQuantity     float64         `json:"origQty,string"`
+	ExecutedQuantity float64         `json:"executedQty,string"`
+	AveragePrice     float64         `json:"avragePrice,string"`
 	Status           OrderStatusType `json:"status"`
 	TimeInForce      TimeInForceType `json:"timeInForce"`
 	Type             OrderType       `json:"type"`
