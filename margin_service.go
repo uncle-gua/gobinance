@@ -858,12 +858,9 @@ func (s *StartIsolatedMarginUserStreamService) Do(ctx context.Context, opts ...R
 	if err != nil {
 		return "", err
 	}
-	j, err := newJSON(data)
-	if err != nil {
-		return "", err
-	}
-	listenKey = j.Get("listenKey").MustString()
-	return listenKey, nil
+	var res ListenKey
+	err = json.Unmarshal(data, &res)
+	return res.ListenKey, err
 }
 
 // KeepaliveIsolatedMarginUserStreamService updates listen key for isolated margin user data stream
@@ -951,12 +948,9 @@ func (s *StartMarginUserStreamService) Do(ctx context.Context, opts ...RequestOp
 	if err != nil {
 		return "", err
 	}
-	j, err := newJSON(data)
-	if err != nil {
-		return "", err
-	}
-	listenKey = j.Get("listenKey").MustString()
-	return listenKey, nil
+	var res ListenKey
+	err = json.Unmarshal(data, &res)
+	return res.ListenKey, err
 }
 
 // KeepaliveMarginUserStreamService update listen key
