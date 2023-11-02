@@ -43,7 +43,7 @@ func (s *GetPositionRiskService) Do(ctx context.Context, opts ...RequestOption) 
 type PositionRisk struct {
 	EntryPrice       float64 `json:"entryPrice,string"`
 	MarginType       string  `json:"marginType"`
-	IsAutoAddMargin  bool    `json:"isAutoAddMargin"`
+	IsAutoAddMargin  bool    `json:"isAutoAddMargin,string"`
 	IsolatedMargin   float64 `json:"isolatedMargin,string"`
 	Leverage         int     `json:"leverage,string"`
 	LiquidationPrice float64 `json:"liquidationPrice,string"`
