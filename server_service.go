@@ -26,21 +26,19 @@ type ServerTimeService struct {
 }
 
 // Do send request
-func (s *ServerTimeService) Do(ctx context.Context, opts ...RequestOption) (serverTime int64, err error) {
+func (s *ServerTimeService) Do(ctx context.Context, opts ...RequestOption) (int64, error) {
 	r := &request{
 		method:   http.MethodGet,
 		endpoint: "/api/v3/time",
 	}
 	data, err := s.c.callAPI(ctx, r, opts...)
-	if err != nil {
-		return 0, err
-	}
-	j, err := newJSON(data)
-	if err != nil {
-		return 0, err
-	}
-	serverTime = j.Get("serverTime").MustInt64()
-	return serverTime, nil
+	var res ServerTime
+	err = json.Unmarshal(data, &res)
+	return res.ServerTime, err
+}
+
+type ServerTime struct {
+	ServerTime int64 `json:"serverTime"`
 }
 
 // SetServerTimeService set server time

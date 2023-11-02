@@ -11,7 +11,7 @@ type StartUserStreamService struct {
 }
 
 // Do send request
-func (s *StartUserStreamService) Do(ctx context.Context, opts ...RequestOption) (listenKey string, err error) {
+func (s *StartUserStreamService) Do(ctx context.Context, opts ...RequestOption) (string, error) {
 	r := &request{
 		method:   http.MethodPost,
 		endpoint: "/api/v3/userDataStream",
@@ -21,12 +21,13 @@ func (s *StartUserStreamService) Do(ctx context.Context, opts ...RequestOption) 
 	if err != nil {
 		return "", err
 	}
-	j, err := newJSON(data)
-	if err != nil {
-		return "", err
-	}
-	listenKey = j.Get("listenKey").MustString()
-	return listenKey, nil
+	var res ListenKey
+	err = json.Unmarshal(data, &res)
+	return res.ListenKey, err
+}
+
+type ListenKey struct {
+	ListenKey string `json:"listenKey"`
 }
 
 // KeepaliveUserStreamService update listen key

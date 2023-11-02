@@ -20,7 +20,6 @@ import (
 
 	"github.com/uncle-gua/gobinance/futures"
 
-	"github.com/bitly/go-simplejson"
 	jsoniter "github.com/json-iterator/go"
 )
 
@@ -238,13 +237,13 @@ func FormatTimestamp(t time.Time) int64 {
 	return t.UnixNano() / int64(time.Millisecond)
 }
 
-func newJSON(data []byte) (j *simplejson.Json, err error) {
-	j, err = simplejson.NewJson(data)
-	if err != nil {
-		return nil, err
-	}
-	return j, nil
-}
+// func newJSON(data []byte) (j *simplejson.Json, err error) {
+// 	j, err = simplejson.NewJson(data)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	return j, nil
+// }
 
 // getAPIEndpoint return the base endpoint of the Rest API according the UseTestnet flag
 func getAPIEndpoint() string {

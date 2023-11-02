@@ -1,13 +1,17 @@
 package common
 
 import (
-	"encoding/json"
 	"errors"
 	"strconv"
+
+	jsoniter "github.com/json-iterator/go"
 )
 
 // PriceLevel is a common structure for bids and asks in the
 // order book.
+
+// Redefining the standard package
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 var ErrPriceLevel = errors.New("failed to parse price level")
 
