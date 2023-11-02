@@ -2,7 +2,6 @@ package futures
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 )
 
@@ -65,48 +64,23 @@ func (s *KlinesService) Do(ctx context.Context, opts ...RequestOption) (res []*K
 	}
 	data, _, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
-		return []*Kline{}, err
+		return res, err
 	}
-	j, err := newJSON(data)
-	if err != nil {
-		return []*Kline{}, err
-	}
-	num := len(j.MustArray())
-	res = make([]*Kline, num)
-	for i := 0; i < num; i++ {
-		item := j.GetIndex(i)
-		if len(item.MustArray()) < 11 {
-			err = fmt.Errorf("invalid kline response")
-			return []*Kline{}, err
-		}
-		res[i] = &Kline{
-			OpenTime:                 item.GetIndex(0).MustInt64(),
-			Open:                     MustFloat64(item.GetIndex(1).MustString()),
-			High:                     MustFloat64(item.GetIndex(2).MustString()),
-			Low:                      MustFloat64(item.GetIndex(3).MustString()),
-			Close:                    MustFloat64(item.GetIndex(4).MustString()),
-			Volume:                   MustFloat64(item.GetIndex(5).MustString()),
-			CloseTime:                item.GetIndex(6).MustInt64(),
-			QuoteAssetVolume:         MustFloat64(item.GetIndex(7).MustString()),
-			TradeNum:                 item.GetIndex(8).MustInt64(),
-			TakerBuyBaseAssetVolume:  MustFloat64(item.GetIndex(9).MustString()),
-			TakerBuyQuoteAssetVolume: MustFloat64(item.GetIndex(10).MustString()),
-		}
-	}
-	return res, nil
+	err = json.Unmarshal(data, &res)
+	return res, err
 }
 
 // Kline define kline info
 type Kline struct {
 	OpenTime                 int64   `json:"openTime"`
-	Open                     float64 `json:"open"`
-	High                     float64 `json:"high"`
-	Low                      float64 `json:"low"`
-	Close                    float64 `json:"close"`
-	Volume                   float64 `json:"volume"`
+	Open                     float64 `json:"open,string"`
+	High                     float64 `json:"high,string"`
+	Low                      float64 `json:"low,string"`
+	Close                    float64 `json:"close,string"`
+	Volume                   float64 `json:"volume,string"`
 	CloseTime                int64   `json:"closeTime"`
-	QuoteAssetVolume         float64 `json:"quoteAssetVolume"`
+	QuoteAssetVolume         float64 `json:"quoteAssetVolume,string"`
 	TradeNum                 int64   `json:"tradeNum"`
-	TakerBuyBaseAssetVolume  float64 `json:"takerBuyBaseAssetVolume"`
-	TakerBuyQuoteAssetVolume float64 `json:"takerBuyQuoteAssetVolume"`
+	TakerBuyBaseAssetVolume  float64 `json:"takerBuyBaseAssetVolume,string"`
+	TakerBuyQuoteAssetVolume float64 `json:"takerBuyQuoteAssetVolume,string"`
 }

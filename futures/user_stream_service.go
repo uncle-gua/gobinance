@@ -11,7 +11,7 @@ type StartUserStreamService struct {
 }
 
 // Do send request
-func (s *StartUserStreamService) Do(ctx context.Context, opts ...RequestOption) (listenKey string, err error) {
+func (s *StartUserStreamService) Do(ctx context.Context, opts ...RequestOption) (string, error) {
 	r := &request{
 		method:   http.MethodPost,
 		endpoint: "/fapi/v1/listenKey",

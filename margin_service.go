@@ -845,7 +845,7 @@ func (s *StartIsolatedMarginUserStreamService) Symbol(symbol string) *StartIsola
 }
 
 // Do send request
-func (s *StartIsolatedMarginUserStreamService) Do(ctx context.Context, opts ...RequestOption) (listenKey string, err error) {
+func (s *StartIsolatedMarginUserStreamService) Do(ctx context.Context, opts ...RequestOption) (string, error) {
 	r := &request{
 		method:   http.MethodPost,
 		endpoint: "/sapi/v1/userDataStream/isolated",
@@ -858,12 +858,9 @@ func (s *StartIsolatedMarginUserStreamService) Do(ctx context.Context, opts ...R
 	if err != nil {
 		return "", err
 	}
-	j, err := newJSON(data)
-	if err != nil {
-		return "", err
-	}
-	listenKey = j.Get("listenKey").MustString()
-	return listenKey, nil
+	res := new(ListenKey)
+	err = json.Unmarshal(data, res)
+	return res.ListenKey, err
 }
 
 // KeepaliveIsolatedMarginUserStreamService updates listen key for isolated margin user data stream
@@ -940,7 +937,7 @@ type StartMarginUserStreamService struct {
 }
 
 // Do send request
-func (s *StartMarginUserStreamService) Do(ctx context.Context, opts ...RequestOption) (listenKey string, err error) {
+func (s *StartMarginUserStreamService) Do(ctx context.Context, opts ...RequestOption) (string, error) {
 	r := &request{
 		method:   http.MethodPost,
 		endpoint: "/sapi/v1/userDataStream",
@@ -951,12 +948,9 @@ func (s *StartMarginUserStreamService) Do(ctx context.Context, opts ...RequestOp
 	if err != nil {
 		return "", err
 	}
-	j, err := newJSON(data)
-	if err != nil {
-		return "", err
-	}
-	listenKey = j.Get("listenKey").MustString()
-	return listenKey, nil
+	res := new(ListenKey)
+	err = json.Unmarshal(data, res)
+	return res.ListenKey, err
 }
 
 // KeepaliveMarginUserStreamService update listen key

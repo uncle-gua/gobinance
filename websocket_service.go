@@ -233,22 +233,22 @@ type WsKlineEvent struct {
 
 // WsKline define websocket kline
 type WsKline struct {
-	StartTime            int64  `json:"t"`
-	EndTime              int64  `json:"T"`
-	Symbol               string `json:"s"`
-	Interval             string `json:"i"`
-	FirstTradeID         int64  `json:"f"`
-	LastTradeID          int64  `json:"L"`
-	Open                 string `json:"o"`
-	Close                string `json:"c"`
-	High                 string `json:"h"`
-	Low                  string `json:"l"`
-	Volume               string `json:"v"`
-	TradeNum             int64  `json:"n"`
-	IsFinal              bool   `json:"x"`
-	QuoteVolume          string `json:"q"`
-	ActiveBuyVolume      string `json:"V"`
-	ActiveBuyQuoteVolume string `json:"Q"`
+	StartTime            int64   `json:"t"`
+	EndTime              int64   `json:"T"`
+	Symbol               string  `json:"s"`
+	Interval             string  `json:"i"`
+	FirstTradeID         int64   `json:"f"`
+	LastTradeID          int64   `json:"L"`
+	Open                 float64 `json:"o,string"`
+	Close                float64 `json:"c,string"`
+	High                 float64 `json:"h,string"`
+	Low                  float64 `json:"l,string"`
+	Volume               float64 `json:"v,string"`
+	TradeNum             int64   `json:"n"`
+	IsFinal              bool    `json:"x"`
+	QuoteVolume          float64 `json:"q,string"`
+	ActiveBuyVolume      float64 `json:"V,string"`
+	ActiveBuyQuoteVolume float64 `json:"Q,string"`
 }
 
 // WsAggTradeHandler handle websocket aggregate trade event
@@ -362,17 +362,17 @@ func WsCombinedTradeServe(symbols []string, handler WsCombinedTradeHandler, errH
 
 // WsTradeEvent define websocket trade event
 type WsTradeEvent struct {
-	Event         string `json:"e"`
-	Time          int64  `json:"E"`
-	Symbol        string `json:"s"`
-	TradeID       int64  `json:"t"`
-	Price         string `json:"p"`
-	Quantity      string `json:"q"`
-	BuyerOrderID  int64  `json:"b"`
-	SellerOrderID int64  `json:"a"`
-	TradeTime     int64  `json:"T"`
-	IsBuyerMaker  bool   `json:"m"`
-	Placeholder   bool   `json:"M"` // add this field to avoid case insensitive unmarshaling
+	Event         string  `json:"e"`
+	Time          int64   `json:"E"`
+	Symbol        string  `json:"s"`
+	TradeID       int64   `json:"t"`
+	Price         float64 `json:"p,string"`
+	Quantity      float64 `json:"q,string"`
+	BuyerOrderID  int64   `json:"b"`
+	SellerOrderID int64   `json:"a"`
+	TradeTime     int64   `json:"T"`
+	IsBuyerMaker  bool    `json:"m"`
+	Placeholder   bool    `json:"M"` // add this field to avoid case insensitive unmarshaling
 }
 
 type WsCombinedTradeEvent struct {
