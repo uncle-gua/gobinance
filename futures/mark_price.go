@@ -138,20 +138,13 @@ func (s *GetLeverageBracketService) Do(ctx context.Context, opts ...RequestOptio
 	}
 	data, _, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
-		return []*LeverageBracket{}, err
+		return res, err
 	}
-
 	if s.symbol != "" {
 		data = common.ToJSONList(data)
 	}
-
-	res = make([]*LeverageBracket, 0)
 	err = json.Unmarshal(data, &res)
-	if err != nil {
-		return []*LeverageBracket{}, err
-	}
-
-	return res, nil
+	return res, err
 }
 
 // LeverageBracket define the leverage bracket
