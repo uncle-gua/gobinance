@@ -32,23 +32,19 @@ func (s *PremiumIndexService) Do(ctx context.Context, opts ...RequestOption) (re
 	data, _, err := s.c.callAPI(ctx, r, opts...)
 	data = common.ToJSONList(data)
 	if err != nil {
-		return []*PremiumIndex{}, err
+		return res, err
 	}
-	res = make([]*PremiumIndex, 0)
 	err = json.Unmarshal(data, &res)
-	if err != nil {
-		return []*PremiumIndex{}, err
-	}
-	return res, nil
+	return res, err
 }
 
 // PremiumIndex define premium index of mark price
 type PremiumIndex struct {
-	Symbol          string `json:"symbol"`
-	MarkPrice       string `json:"markPrice"`
-	LastFundingRate string `json:"lastFundingRate"`
-	NextFundingTime int64  `json:"nextFundingTime"`
-	Time            int64  `json:"time"`
+	Symbol          string  `json:"symbol"`
+	MarkPrice       float64 `json:"markPrice,string"`
+	LastFundingRate float64 `json:"lastFundingRate,string"`
+	NextFundingTime int64   `json:"nextFundingTime"`
+	Time            int64   `json:"time"`
 }
 
 // FundingRateService get funding rate
@@ -103,22 +99,18 @@ func (s *FundingRateService) Do(ctx context.Context, opts ...RequestOption) (res
 	}
 	data, _, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
-		return []*FundingRate{}, err
+		return res, err
 	}
-	res = make([]*FundingRate, 0)
 	err = json.Unmarshal(data, &res)
-	if err != nil {
-		return []*FundingRate{}, err
-	}
-	return res, nil
+	return res, err
 }
 
 // FundingRate define funding rate of mark price
 type FundingRate struct {
-	Symbol      string `json:"symbol"`
-	FundingRate string `json:"fundingRate"`
-	FundingTime int64  `json:"fundingTime"`
-	Time        int64  `json:"time"`
+	Symbol      string  `json:"symbol"`
+	FundingRate float64 `json:"fundingRate,string"`
+	FundingTime int64   `json:"fundingTime"`
+	Time        int64   `json:"time"`
 }
 
 // GetLeverageBracketService get funding rate
