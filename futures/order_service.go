@@ -777,20 +777,20 @@ type UserLiquidationOrder struct {
 	Symbol           string           `json:"symbol"`
 	Status           OrderStatusType  `json:"status"`
 	ClientOrderId    string           `json:"clientOrderId"`
-	Price            string           `json:"price"`
-	AveragePrice     string           `json:"avgPrice"`
-	OrigQuantity     string           `json:"origQty"`
-	ExecutedQuantity string           `json:"executedQty"`
-	CumQuote         string           `json:"cumQuote"`
+	Price            float64          `json:"price,string"`
+	AveragePrice     float64          `json:"avgPrice,string"`
+	OrigQuantity     float64          `json:"origQty,string"`
+	ExecutedQuantity float64          `json:"executedQty,string"`
+	CumQuote         float64          `json:"cumQuote,string"`
 	TimeInForce      TimeInForceType  `json:"timeInForce"`
 	Type             OrderType        `json:"type"`
 	ReduceOnly       bool             `json:"reduceOnly"`
 	ClosePosition    bool             `json:"closePosition"`
 	Side             SideType         `json:"side"`
 	PositionSide     PositionSideType `json:"positionSide"`
-	StopPrice        string           `json:"stopPrice"`
+	StopPrice        float64          `json:"stopPrice,string"`
 	WorkingType      WorkingType      `json:"workingType"`
-	OrigType         string           `json:"origType"`
+	OrigType         float64          `json:"origType,string"`
 	Time             int64            `json:"time"`
 	UpdateTime       int64            `json:"updateTime"`
 }
