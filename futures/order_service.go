@@ -2,6 +2,7 @@ package futures
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"

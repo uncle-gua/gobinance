@@ -6,6 +6,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -15,12 +16,10 @@ import (
 	"strconv"
 	"time"
 
-	jsoniter "github.com/json-iterator/go"
 	"github.com/uncle-gua/gobinance/common"
-)
 
-// Redefining the standard package
-var json = jsoniter.ConfigCompatibleWithStandardLibrary
+	"github.com/bitly/go-simplejson"
+)
 
 // SideType define side type of order
 type SideType string
@@ -184,13 +183,13 @@ func currentTimestamp() int64 {
 	return int64(time.Nanosecond) * time.Now().UnixNano() / int64(time.Millisecond)
 }
 
-// func newJSON(data []byte) (j *simplejson.Json, err error) {
-// 	j, err = simplejson.NewJson(data)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return j, nil
-// }
+func newJSON(data []byte) (j *simplejson.Json, err error) {
+	j, err = simplejson.NewJson(data)
+	if err != nil {
+		return nil, err
+	}
+	return j, nil
+}
 
 // getApiEndpoint return the base endpoint of the WS according the UseTestnet flag
 func getApiEndpoint() string {

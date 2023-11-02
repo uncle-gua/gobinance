@@ -3,6 +3,7 @@ module github.com/uncle-gua/gobinance
 go 1.19
 
 require (
+	github.com/bitly/go-simplejson v0.5.1
 	github.com/json-iterator/go v1.1.12
 	github.com/uncle-gua/wsc v0.0.0-20230913001608-f1b617b2397e
 )

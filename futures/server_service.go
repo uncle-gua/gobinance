@@ -26,7 +26,7 @@ type ServerTimeService struct {
 }
 
 // Do send request
-func (s *ServerTimeService) Do(ctx context.Context, opts ...RequestOption) (int64, error) {
+func (s *ServerTimeService) Do(ctx context.Context, opts ...RequestOption) (serverTime int64, err error) {
 	r := &request{
 		method:   http.MethodGet,
 		endpoint: "/fapi/v1/time",
@@ -35,13 +35,12 @@ func (s *ServerTimeService) Do(ctx context.Context, opts ...RequestOption) (int6
 	if err != nil {
 		return 0, err
 	}
-	var res ServerTime
-	err = json.Unmarshal(data, &res)
-	return res.ServerTime, err
-}
-
-type ServerTime struct {
-	ServerTime int64 `json:"serverTime"`
+	j, err := newJSON(data)
+	if err != nil {
+		return 0, err
+	}
+	serverTime = j.Get("serverTime").MustInt64()
+	return serverTime, nil
 }
 
 // SetServerTimeService set server time

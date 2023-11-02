@@ -1,9 +1,7 @@
 package common
 
-import (
-	"bytes"
-	"math"
-)
+import "math"
+import "bytes"
 
 // AmountToLotSize converts an amount to a lot sized amount
 func AmountToLotSize(lot float64, precision int, amount float64) float64 {

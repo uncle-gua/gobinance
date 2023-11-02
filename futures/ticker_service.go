@@ -2,6 +2,7 @@ package futures
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/uncle-gua/gobinance/common"
