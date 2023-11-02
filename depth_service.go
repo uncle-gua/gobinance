@@ -41,7 +41,6 @@ func (s *DepthService) Do(ctx context.Context, opts ...RequestOption) (res *Dept
 		return nil, err
 	}
 	res = new(DepthResponse)
-	err = json.Unmarshal(data, res)
 	if err := json.Unmarshal(data, res); err != nil {
 		return nil, err
 	}
