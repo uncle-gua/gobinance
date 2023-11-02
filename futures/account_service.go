@@ -31,13 +31,13 @@ func (s *GetBalanceService) Do(ctx context.Context, opts ...RequestOption) (res 
 
 // Balance define user balance of your account
 type Balance struct {
-	AccountAlias       string `json:"accountAlias"`
-	Asset              string `json:"asset"`
-	Balance            string `json:"balance"`
-	CrossWalletBalance string `json:"crossWalletBalance"`
-	CrossUnPnl         string `json:"crossUnPnl"`
-	AvailableBalance   string `json:"availableBalance"`
-	MaxWithdrawAmount  string `json:"maxWithdrawAmount"`
+	AccountAlias       string  `json:"accountAlias"`
+	Asset              string  `json:"asset"`
+	Balance            float64 `json:"balance,string"`
+	CrossWalletBalance float64 `json:"crossWalletBalance,string"`
+	CrossUnPnl         float64 `json:"crossUnPnl,string"`
+	AvailableBalance   float64 `json:"availableBalance,string"`
+	MaxWithdrawAmount  float64 `json:"maxWithdrawAmount,string"`
 }
 
 // GetAccountService get account info
