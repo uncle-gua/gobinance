@@ -19,14 +19,10 @@ func (s *GetBalanceService) Do(ctx context.Context, opts ...RequestOption) (res 
 	}
 	data, _, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
-		return []*Balance{}, err
+		return res, err
 	}
-	res = make([]*Balance, 0)
 	err = json.Unmarshal(data, &res)
-	if err != nil {
-		return []*Balance{}, err
-	}
-	return res, nil
+	return res, err
 }
 
 // Balance define user balance of your account
