@@ -7,11 +7,11 @@ import (
 	jsoniter "github.com/json-iterator/go"
 )
 
-// Redefining the standard package
-var json = jsoniter.ConfigCompatibleWithStandardLibrary
-
 // PriceLevel is a common structure for bids and asks in the
 // order book.
+
+// Redefining the standard package
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 var ErrPriceLevel = errors.New("failed to parse price level")
 

@@ -35,13 +35,12 @@ func (s *ServerTimeService) Do(ctx context.Context, opts ...RequestOption) (serv
 	if err != nil {
 		return 0, err
 	}
-	res := new(ServerTime)
-	err = json.Unmarshal(data, res)
-	return res.ServiceTIme, err
-}
-
-type ServerTime struct {
-	ServiceTIme int64 `json:"serverTime"`
+	j, err := newJSON(data)
+	if err != nil {
+		return 0, err
+	}
+	serverTime = j.Get("serverTime").MustInt64()
+	return serverTime, nil
 }
 
 // SetServerTimeService set server time

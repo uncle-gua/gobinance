@@ -2,6 +2,7 @@ package delivery
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 )
 
@@ -64,16 +65,41 @@ func (s *KlinesService) Do(ctx context.Context, opts ...RequestOption) (res []*K
 	}
 	data, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
-		return res, err
+		return []*Kline{}, err
 	}
-	err = json.Unmarshal(data, &res)
-	return res, err
+	j, err := newJSON(data)
+	if err != nil {
+		return []*Kline{}, err
+	}
+	num := len(j.MustArray())
+	res = make([]*Kline, num)
+	for i := 0; i < num; i++ {
+		item := j.GetIndex(i)
+		if len(item.MustArray()) < 11 {
+			err = fmt.Errorf("invalid kline response")
+			return []*Kline{}, err
+		}
+		res[i] = &Kline{
+			OpenTime:                 item.GetIndex(0).MustInt64(),
+			Open:                     item.GetIndex(1).MustFloat64(),
+			High:                     item.GetIndex(2).MustFloat64(),
+			Low:                      item.GetIndex(3).MustFloat64(),
+			Close:                    item.GetIndex(4).MustFloat64(),
+			Volume:                   item.GetIndex(5).MustFloat64(),
+			CloseTime:                item.GetIndex(6).MustInt64(),
+			QuoteAssetVolume:         item.GetIndex(7).MustFloat64(),
+			TradeNum:                 item.GetIndex(8).MustInt64(),
+			TakerBuyBaseAssetVolume:  item.GetIndex(9).MustFloat64(),
+			TakerBuyQuoteAssetVolume: item.GetIndex(10).MustFloat64(),
+		}
+	}
+	return res, nil
 }
 
 // Kline define kline info
 type Kline struct {
 	OpenTime                 int64   `json:"openTime"`
-	Open                     string  `json:"open"`
+	Open                     float64 `json:"open,string"`
 	High                     float64 `json:"high,string"`
 	Low                      float64 `json:"low,string"`
 	Close                    float64 `json:"close,string"`

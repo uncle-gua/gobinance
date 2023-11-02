@@ -42,8 +42,11 @@ func (s *DepthService) Do(ctx context.Context, opts ...RequestOption) (res *Dept
 	}
 
 	res = new(DepthResponse)
-	json.Unmarshal(data, res)
-	return res, err
+	if err := json.Unmarshal(data, res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }
 
 // DepthResponse define depth info with bids and asks
