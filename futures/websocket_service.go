@@ -802,31 +802,31 @@ type WsOrderTradeUpdate struct {
 	Side                 SideType           `json:"S"`
 	Type                 OrderType          `json:"o"`
 	TimeInForce          TimeInForceType    `json:"f"`
-	OriginalQty          string             `json:"q"`
-	OriginalPrice        string             `json:"p"`
-	AveragePrice         string             `json:"ap"`
-	StopPrice            string             `json:"sp"`
+	OriginalQty          float64            `json:"q,string"`
+	OriginalPrice        float64            `json:"p,string"`
+	AveragePrice         float64            `json:"ap,string"`
+	StopPrice            float64            `json:"sp,string"`
 	ExecutionType        OrderExecutionType `json:"x"`
 	Status               OrderStatusType    `json:"X"`
 	ID                   int64              `json:"i"`
-	LastFilledQty        string             `json:"l"`
-	AccumulatedFilledQty string             `json:"z"`
-	LastFilledPrice      string             `json:"L"`
-	CommissionAsset      string             `json:"N"`
-	Commission           string             `json:"n"`
+	LastFilledQty        float64            `json:"l,string"`
+	AccumulatedFilledQty float64            `json:"z,string"`
+	LastFilledPrice      float64            `json:"L,string"`
+	CommissionAsset      float64            `json:"N,string"`
+	Commission           float64            `json:"n,string"`
 	TradeTime            int64              `json:"T"`
 	TradeID              int64              `json:"t"`
-	BidsNotional         string             `json:"b"`
-	AsksNotional         string             `json:"a"`
+	BidsNotional         float64            `json:"b,string"`
+	AsksNotional         float64            `json:"a,string"`
 	IsMaker              bool               `json:"m"`
 	IsReduceOnly         bool               `json:"R"`
 	WorkingType          WorkingType        `json:"wt"`
 	OriginalType         OrderType          `json:"ot"`
 	PositionSide         PositionSideType   `json:"ps"`
 	IsClosingPosition    bool               `json:"cp"`
-	ActivationPrice      string             `json:"AP"`
-	CallbackRate         string             `json:"cr"`
-	RealizedPnL          string             `json:"rp"`
+	ActivationPrice      float64            `json:"AP,string"`
+	CallbackRate         float64            `json:"cr,string"`
+	RealizedPnL          float64            `json:"rp,string"`
 }
 
 // WsAccountConfigUpdate define account config update
