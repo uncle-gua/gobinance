@@ -173,6 +173,7 @@ func (s *CreateOrderService) createOrder(ctx context.Context, endpoint string, o
 	if s.closePosition != nil {
 		m["closePosition"] = *s.closePosition
 	}
+	fmt.Println(m)
 	r.setFormParams(m)
 	data, header, err = s.c.callAPI(ctx, r, opts...)
 	if err != nil {
