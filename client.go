@@ -14,8 +14,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/uncle-gua/gobinance/common"
-
 	"github.com/uncle-gua/gobinance/delivery"
 
 	"github.com/uncle-gua/gobinance/futures"
@@ -416,7 +414,7 @@ func (c *Client) callAPI(ctx context.Context, r *request, opts ...RequestOption)
 	c.debug("response status code: %d", res.StatusCode)
 
 	if res.StatusCode >= http.StatusBadRequest {
-		apiErr := new(common.APIError)
+		apiErr := new(APIError)
 		e := json.Unmarshal(data, apiErr)
 		if e != nil {
 			c.debug("failed to unmarshal json: %s", e)
