@@ -15,6 +15,7 @@ import (
 
 	"github.com/bitly/go-simplejson"
 	jsoniter "github.com/json-iterator/go"
+	"github.com/uncle-gua/gobinance/common"
 )
 
 // SideType define side type of order
@@ -314,7 +315,7 @@ func (c *Client) callAPI(ctx context.Context, r *request, opts ...RequestOption)
 	c.debug("response status code: %d", res.StatusCode)
 
 	if res.StatusCode >= http.StatusBadRequest {
-		apiErr := new(APIError)
+		apiErr := new(common.APIError)
 		e := json.Unmarshal(data, apiErr)
 		if e != nil {
 			c.debug("failed to unmarshal json: %s", e)
