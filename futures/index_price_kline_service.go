@@ -2,7 +2,6 @@ package futures
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 )
 
@@ -65,28 +64,8 @@ func (ipks *IndexPriceKlinesService) Do(ctx context.Context, opts ...RequestOpti
 	}
 	data, _, err := ipks.c.callAPI(ctx, r, opts...)
 	if err != nil {
-		return []*Kline{}, err
+		return res, err
 	}
-	j, err := newJSON(data)
-	if err != nil {
-		return []*Kline{}, err
-	}
-	num := len(j.MustArray())
-	res = make([]*Kline, num)
-	for i := 0; i < num; i++ {
-		item := j.GetIndex(i)
-		if len(item.MustArray()) < 11 {
-			err = fmt.Errorf("invalid kline response")
-			return []*Kline{}, err
-		}
-		res[i] = &Kline{
-			OpenTime:  item.GetIndex(0).MustInt64(),
-			Open:      item.GetIndex(1).MustFloat64(),
-			High:      item.GetIndex(2).MustFloat64(),
-			Low:       item.GetIndex(3).MustFloat64(),
-			Close:     item.GetIndex(4).MustFloat64(),
-			CloseTime: item.GetIndex(6).MustInt64(),
-		}
-	}
-	return res, nil
+	err = json.Unmarshal(data, &res)
+	return res, err
 }
