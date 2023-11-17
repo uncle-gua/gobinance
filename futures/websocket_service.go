@@ -215,16 +215,16 @@ type WsKline struct {
 	Interval             string  `json:"i"`
 	FirstTradeID         int64   `json:"f"`
 	LastTradeID          int64   `json:"L"`
-	Open                 float64 `json:"o"`
-	Close                float64 `json:"c"`
-	High                 float64 `json:"h"`
-	Low                  float64 `json:"l"`
-	Volume               float64 `json:"v"`
+	Open                 float64 `json:"o,string"`
+	Close                float64 `json:"c,string"`
+	High                 float64 `json:"h,string"`
+	Low                  float64 `json:"l,string"`
+	Volume               float64 `json:"v,string"`
 	TradeNum             int64   `json:"n"`
 	IsFinal              bool    `json:"x"`
-	QuoteVolume          float64 `json:"q"`
-	ActiveBuyVolume      float64 `json:"V"`
-	ActiveBuyQuoteVolume float64 `json:"Q"`
+	QuoteVolume          float64 `json:"q,string"`
+	ActiveBuyVolume      float64 `json:"V,string"`
+	ActiveBuyQuoteVolume float64 `json:"Q,string"`
 }
 
 // WsKlineHandler handle websocket kline event
@@ -234,37 +234,13 @@ type WsKlineHandler func(event *WsKlineEvent)
 func WsKlineServe(symbol string, interval string, handler WsKlineHandler, errHandler ErrHandler) (done chan struct{}, err error) {
 	endpoint := fmt.Sprintf("%s/%s@kline_%s", getWsEndpoint(), strings.ToLower(symbol), interval)
 	cfg := newWsConfig(endpoint)
-	wsHandler := func(message []byte) {
-		item, err := newJSON(message)
-		if err != nil {
+	wsHandler := func(data []byte) {
+		var event WsKlineEvent
+		if err := json.Unmarshal(data, &event); err != nil {
 			errHandler(err)
 			return
 		}
-		kline := item.Get("k")
-		event := &WsKlineEvent{
-			Event:  item.Get("e").MustString(),
-			Time:   item.Get("E").MustInt64(),
-			Symbol: item.Get("s").MustString(),
-			Kline: WsKline{
-				StartTime:            kline.Get("t").MustInt64(),
-				EndTime:              kline.Get("T").MustInt64(),
-				Symbol:               kline.Get("s").MustString(),
-				Interval:             kline.Get("i").MustString(),
-				FirstTradeID:         kline.Get("f").MustInt64(),
-				LastTradeID:          kline.Get("L").MustInt64(),
-				Open:                 MustFloat64(kline.Get("o").MustString()),
-				Close:                MustFloat64(kline.Get("c").MustString()),
-				High:                 MustFloat64(kline.Get("h").MustString()),
-				Low:                  MustFloat64(kline.Get("l").MustString()),
-				Volume:               MustFloat64(kline.Get("v").MustString()),
-				TradeNum:             kline.Get("n").MustInt64(),
-				IsFinal:              kline.Get("x").MustBool(),
-				QuoteVolume:          MustFloat64(kline.Get("q").MustString()),
-				ActiveBuyVolume:      MustFloat64(kline.Get("V").MustString()),
-				ActiveBuyQuoteVolume: MustFloat64(kline.Get("Q").MustString()),
-			},
-		}
-		handler(event)
+		handler(&event)
 	}
 	return wsServe(cfg, wsHandler, errHandler)
 }
