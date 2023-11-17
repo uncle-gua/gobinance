@@ -1,1 +1,1 @@
-# gobinance
+# binance exchange golang client
