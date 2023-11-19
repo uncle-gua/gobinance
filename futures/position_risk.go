@@ -29,14 +29,10 @@ func (s *GetPositionRiskService) Do(ctx context.Context, opts ...RequestOption) 
 	}
 	data, _, err := s.c.callAPI(ctx, r, opts...)
 	if err != nil {
-		return []*PositionRisk{}, err
+		return res, err
 	}
-	res = make([]*PositionRisk, 0)
 	err = json.Unmarshal(data, &res)
-	if err != nil {
-		return []*PositionRisk{}, err
-	}
-	return res, nil
+	return res, err
 }
 
 // PositionRisk define position risk info
