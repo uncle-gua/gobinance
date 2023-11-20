@@ -49,6 +49,12 @@ func (s *DepthService) Do(ctx context.Context, opts ...RequestOption) (res *Dept
 	return res, nil
 }
 
+// Ask is a type alias for PriceLevel.
+type Ask = common.PriceLevel
+
+// Bid is a type alias for PriceLevel.
+type Bid = common.PriceLevel
+
 // DepthResponse define depth info with bids and asks
 type DepthResponse struct {
 	LastUpdateID int64 `json:"lastUpdateId"`
@@ -57,9 +63,3 @@ type DepthResponse struct {
 	Bids         []Bid `json:"bids"`
 	Asks         []Ask `json:"asks"`
 }
-
-// Ask is a type alias for PriceLevel.
-type Ask = common.PriceLevel
-
-// Bid is a type alias for PriceLevel.
-type Bid = common.PriceLevel
