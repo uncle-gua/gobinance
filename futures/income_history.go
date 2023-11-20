@@ -70,12 +70,8 @@ func (s *GetIncomeHistoryService) Do(ctx context.Context, opts ...RequestOption)
 	if err != nil {
 		return nil, err
 	}
-	res = make([]*IncomeHistory, 0)
 	err = json.Unmarshal(data, &res)
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
+	return res, err
 }
 
 // IncomeHistory define position margin history info
