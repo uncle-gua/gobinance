@@ -51,17 +51,17 @@ type WsPartialDepthHandler func(event *WsPartialDepthEvent)
 // WsPartialDepthServe serve websocket partial depth handler with a symbol, using 1sec updates
 func WsPartialDepthServe(symbol string, levels string, handler WsPartialDepthHandler, errHandler ErrHandler) (done chan struct{}, err error) {
 	endpoint := fmt.Sprintf("%s/%s@depth%s", getWsEndpoint(), strings.ToLower(symbol), levels)
-	return wsPartialDepthServe(endpoint, symbol, handler, errHandler)
+	return wsPartialDepthServe(endpoint, handler, errHandler)
 }
 
 // WsPartialDepthServe100Ms serve websocket partial depth handler with a symbol, using 100msec updates
 func WsPartialDepthServe100Ms(symbol string, levels string, handler WsPartialDepthHandler, errHandler ErrHandler) (done chan struct{}, err error) {
 	endpoint := fmt.Sprintf("%s/%s@depth%s@100ms", getWsEndpoint(), strings.ToLower(symbol), levels)
-	return wsPartialDepthServe(endpoint, symbol, handler, errHandler)
+	return wsPartialDepthServe(endpoint, handler, errHandler)
 }
 
 // WsPartialDepthServe serve websocket partial depth handler with a symbol
-func wsPartialDepthServe(endpoint string, symbol string, handler WsPartialDepthHandler, errHandler ErrHandler) (done chan struct{}, err error) {
+func wsPartialDepthServe(endpoint string, handler WsPartialDepthHandler, errHandler ErrHandler) (done chan struct{}, err error) {
 	cfg := newWsConfig(endpoint)
 	wsHandler := func(message []byte) {
 		event := new(WsPartialDepthEvent)
