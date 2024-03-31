@@ -76,16 +76,16 @@ type Symbol struct {
 
 // LotSizeFilter define lot size filter of symbol
 type LotSizeFilter struct {
-	MaxQuantity string `json:"maxQty"`
-	MinQuantity string `json:"minQty"`
-	StepSize    string `json:"stepSize"`
+	MaxQuantity float64 `json:"maxQty,string"`
+	MinQuantity float64 `json:"minQty,string"`
+	StepSize    float64 `json:"stepSize,string"`
 }
 
 // PriceFilter define price filter of symbol
 type PriceFilter struct {
-	MaxPrice string `json:"maxPrice"`
-	MinPrice string `json:"minPrice"`
-	TickSize string `json:"tickSize"`
+	MaxPrice float64 `json:"maxPrice,string"`
+	MinPrice float64 `json:"minPrice,string"`
+	TickSize float64 `json:"tickSize,string"`
 }
 
 // PercentPriceFilter define percent price filter of symbol
@@ -123,13 +123,13 @@ func (s *Symbol) LotSizeFilter() *LotSizeFilter {
 		if filter["filterType"].(string) == string(SymbolFilterTypeLotSize) {
 			f := &LotSizeFilter{}
 			if i, ok := filter["maxQty"]; ok {
-				f.MaxQuantity = i.(string)
+				f.MaxQuantity = i.(float64)
 			}
 			if i, ok := filter["minQty"]; ok {
-				f.MinQuantity = i.(string)
+				f.MinQuantity = i.(float64)
 			}
 			if i, ok := filter["stepSize"]; ok {
-				f.StepSize = i.(string)
+				f.StepSize = i.(float64)
 			}
 			return f
 		}
@@ -143,13 +143,13 @@ func (s *Symbol) PriceFilter() *PriceFilter {
 		if filter["filterType"].(string) == string(SymbolFilterTypePrice) {
 			f := &PriceFilter{}
 			if i, ok := filter["maxPrice"]; ok {
-				f.MaxPrice = i.(string)
+				f.MaxPrice = i.(float64)
 			}
 			if i, ok := filter["minPrice"]; ok {
-				f.MinPrice = i.(string)
+				f.MinPrice = i.(float64)
 			}
 			if i, ok := filter["tickSize"]; ok {
-				f.TickSize = i.(string)
+				f.TickSize = i.(float64)
 			}
 			return f
 		}
