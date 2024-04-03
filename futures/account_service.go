@@ -27,13 +27,13 @@ func (s *GetBalanceService) Do(ctx context.Context, opts ...RequestOption) (res 
 
 // Balance define user balance of your account
 type Balance struct {
-	AccountAlias       string `json:"accountAlias"`
-	Asset              string `json:"asset"`
-	Balance            string `json:"balance"`
-	CrossWalletBalance string `json:"crossWalletBalance"`
-	CrossUnPnl         string `json:"crossUnPnl"`
-	AvailableBalance   string `json:"availableBalance"`
-	MaxWithdrawAmount  string `json:"maxWithdrawAmount"`
+	AccountAlias       string  `json:"accountAlias"`
+	Asset              string  `json:"asset"`
+	Balance            float64 `json:"balance,string"`
+	CrossWalletBalance float64 `json:"crossWalletBalance,string"`
+	CrossUnPnl         float64 `json:"crossUnPnl,string"`
+	AvailableBalance   float64 `json:"availableBalance,string"`
+	MaxWithdrawAmount  float64 `json:"maxWithdrawAmount,string"`
 }
 
 // GetAccountService get account info
@@ -68,48 +68,48 @@ type Account struct {
 	CanDeposit                  bool               `json:"canDeposit"`
 	CanWithdraw                 bool               `json:"canWithdraw"`
 	UpdateTime                  int64              `json:"updateTime"`
-	TotalInitialMargin          string             `json:"totalInitialMargin"`
-	TotalMaintMargin            string             `json:"totalMaintMargin"`
-	TotalWalletBalance          string             `json:"totalWalletBalance"`
-	TotalUnrealizedProfit       string             `json:"totalUnrealizedProfit"`
-	TotalMarginBalance          string             `json:"totalMarginBalance"`
-	TotalPositionInitialMargin  string             `json:"totalPositionInitialMargin"`
-	TotalOpenOrderInitialMargin string             `json:"totalOpenOrderInitialMargin"`
-	TotalCrossWalletBalance     string             `json:"totalCrossWalletBalance"`
-	TotalCrossUnPnl             string             `json:"totalCrossUnPnl"`
-	AvailableBalance            string             `json:"availableBalance"`
-	MaxWithdrawAmount           string             `json:"maxWithdrawAmount"`
+	TotalInitialMargin          float64            `json:"totalInitialMargin,string"`
+	TotalMaintMargin            float64            `json:"totalMaintMargin,string"`
+	TotalWalletBalance          float64            `json:"totalWalletBalance,string"`
+	TotalUnrealizedProfit       float64            `json:"totalUnrealizedProfit,string"`
+	TotalMarginBalance          float64            `json:"totalMarginBalance,string"`
+	TotalPositionInitialMargin  float64            `json:"totalPositionInitialMargin,string"`
+	TotalOpenOrderInitialMargin float64            `json:"totalOpenOrderInitialMargin,string"`
+	TotalCrossWalletBalance     float64            `json:"totalCrossWalletBalance,string"`
+	TotalCrossUnPnl             float64            `json:"totalCrossUnPnl,string"`
+	AvailableBalance            float64            `json:"availableBalance,string"`
+	MaxWithdrawAmount           float64            `json:"maxWithdrawAmount,string"`
 	Positions                   []*AccountPosition `json:"positions"`
 }
 
 // AccountAsset define account asset
 type AccountAsset struct {
-	Asset                  string `json:"asset"`
-	InitialMargin          string `json:"initialMargin"`
-	MaintMargin            string `json:"maintMargin"`
-	MarginBalance          string `json:"marginBalance"`
-	MaxWithdrawAmount      string `json:"maxWithdrawAmount"`
-	OpenOrderInitialMargin string `json:"openOrderInitialMargin"`
-	PositionInitialMargin  string `json:"positionInitialMargin"`
-	UnrealizedProfit       string `json:"unrealizedProfit"`
-	WalletBalance          string `json:"walletBalance"`
+	Asset                  string  `json:"asset"`
+	InitialMargin          float64 `json:"initialMargin,string"`
+	MaintMargin            float64 `json:"maintMargin,string"`
+	MarginBalance          float64 `json:"marginBalance,string"`
+	MaxWithdrawAmount      float64 `json:"maxWithdrawAmount,string"`
+	OpenOrderInitialMargin float64 `json:"openOrderInitialMargin,string"`
+	PositionInitialMargin  float64 `json:"positionInitialMargin,string"`
+	UnrealizedProfit       float64 `json:"unrealizedProfit,string"`
+	WalletBalance          float64 `json:"walletBalance,string"`
 }
 
 // AccountPosition define account position
 type AccountPosition struct {
 	Isolated               bool             `json:"isolated"`
 	Leverage               string           `json:"leverage"`
-	InitialMargin          string           `json:"initialMargin"`
-	MaintMargin            string           `json:"maintMargin"`
-	OpenOrderInitialMargin string           `json:"openOrderInitialMargin"`
-	PositionInitialMargin  string           `json:"positionInitialMargin"`
+	InitialMargin          float64          `json:"initialMargin,string"`
+	MaintMargin            float64          `json:"maintMargin,string"`
+	OpenOrderInitialMargin float64          `json:"openOrderInitialMargin,string"`
+	PositionInitialMargin  float64          `json:"positionInitialMargin,string"`
 	Symbol                 string           `json:"symbol"`
-	UnrealizedProfit       string           `json:"unrealizedProfit"`
-	EntryPrice             string           `json:"entryPrice"`
-	MaxNotional            string           `json:"maxNotional"`
+	UnrealizedProfit       float64          `json:"unrealizedProfit,string"`
+	EntryPrice             float64          `json:"entryPrice,string"`
+	MaxNotional            float64          `json:"maxNotional,string"`
 	PositionSide           PositionSideType `json:"positionSide"`
-	PositionAmt            string           `json:"positionAmt"`
-	Notional               string           `json:"notional"`
-	IsolatedWallet         string           `json:"isolatedWallet"`
+	PositionAmt            float64          `json:"positionAmt,string"`
+	Notional               float64          `json:"notional,string"`
+	IsolatedWallet         float64          `json:"isolatedWallet,string"`
 	UpdateTime             int64            `json:"updateTime"`
 }

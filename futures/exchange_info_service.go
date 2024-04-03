@@ -56,8 +56,8 @@ type Symbol struct {
 	DeliveryDate          int64                    `json:"deliveryDate"`
 	OnboardDate           int64                    `json:"onboardDate"`
 	Status                string                   `json:"status"`
-	MaintMarginPercent    string                   `json:"maintMarginPercent"`
-	RequiredMarginPercent string                   `json:"requiredMarginPercent"`
+	MaintMarginPercent    float64                  `json:"maintMarginPercent,string"`
+	RequiredMarginPercent float64                  `json:"requiredMarginPercent,string"`
 	PricePrecision        int                      `json:"pricePrecision"`
 	QuantityPrecision     int                      `json:"quantityPrecision"`
 	BaseAssetPrecision    int                      `json:"baseAssetPrecision"`
@@ -76,16 +76,16 @@ type Symbol struct {
 
 // LotSizeFilter define lot size filter of symbol
 type LotSizeFilter struct {
-	MaxQuantity string `json:"maxQty"`
-	MinQuantity string `json:"minQty"`
-	StepSize    string `json:"stepSize"`
+	MaxQuantity float64 `json:"maxQty,string"`
+	MinQuantity float64 `json:"minQty,string"`
+	StepSize    float64 `json:"stepSize,string"`
 }
 
 // PriceFilter define price filter of symbol
 type PriceFilter struct {
-	MaxPrice string `json:"maxPrice"`
-	MinPrice string `json:"minPrice"`
-	TickSize string `json:"tickSize"`
+	MaxPrice float64 `json:"maxPrice,string"`
+	MinPrice float64 `json:"minPrice,string"`
+	TickSize float64 `json:"tickSize,string"`
 }
 
 // PercentPriceFilter define percent price filter of symbol
@@ -97,9 +97,9 @@ type PercentPriceFilter struct {
 
 // MarketLotSizeFilter define market lot size filter of symbol
 type MarketLotSizeFilter struct {
-	MaxQuantity string `json:"maxQty"`
-	MinQuantity string `json:"minQty"`
-	StepSize    string `json:"stepSize"`
+	MaxQuantity float64 `json:"maxQty,string"`
+	MinQuantity float64 `json:"minQty,string"`
+	StepSize    float64 `json:"stepSize,string"`
 }
 
 // MaxNumOrdersFilter define max num orders filter of symbol
@@ -123,13 +123,25 @@ func (s *Symbol) LotSizeFilter() *LotSizeFilter {
 		if filter["filterType"].(string) == string(SymbolFilterTypeLotSize) {
 			f := &LotSizeFilter{}
 			if i, ok := filter["maxQty"]; ok {
-				f.MaxQuantity = i.(string)
+				v, err := strconv.ParseFloat(i.(string), 64)
+				if err != nil {
+					return nil
+				}
+				f.MaxQuantity = v
 			}
 			if i, ok := filter["minQty"]; ok {
-				f.MinQuantity = i.(string)
+				v, err := strconv.ParseFloat(i.(string), 64)
+				if err != nil {
+					return nil
+				}
+				f.MinQuantity = v
 			}
 			if i, ok := filter["stepSize"]; ok {
-				f.StepSize = i.(string)
+				v, err := strconv.ParseFloat(i.(string), 64)
+				if err != nil {
+					return nil
+				}
+				f.StepSize = v
 			}
 			return f
 		}
@@ -143,13 +155,25 @@ func (s *Symbol) PriceFilter() *PriceFilter {
 		if filter["filterType"].(string) == string(SymbolFilterTypePrice) {
 			f := &PriceFilter{}
 			if i, ok := filter["maxPrice"]; ok {
-				f.MaxPrice = i.(string)
+				v, err := strconv.ParseFloat(i.(string), 64)
+				if err != nil {
+					return nil
+				}
+				f.MaxPrice = v
 			}
 			if i, ok := filter["minPrice"]; ok {
-				f.MinPrice = i.(string)
+				v, err := strconv.ParseFloat(i.(string), 64)
+				if err != nil {
+					return nil
+				}
+				f.MinPrice = v
 			}
 			if i, ok := filter["tickSize"]; ok {
-				f.TickSize = i.(string)
+				v, err := strconv.ParseFloat(i.(string), 64)
+				if err != nil {
+					return nil
+				}
+				f.TickSize = v
 			}
 			return f
 		}
@@ -189,13 +213,26 @@ func (s *Symbol) MarketLotSizeFilter() *MarketLotSizeFilter {
 		if filter["filterType"].(string) == string(SymbolFilterTypeMarketLotSize) {
 			f := &MarketLotSizeFilter{}
 			if i, ok := filter["maxQty"]; ok {
-				f.MaxQuantity = i.(string)
+				v, err := strconv.ParseFloat(i.(string), 64)
+				if err != nil {
+					return nil
+				}
+				f.MaxQuantity = v
 			}
 			if i, ok := filter["minQty"]; ok {
-				f.MinQuantity = i.(string)
+				v, err := strconv.ParseFloat(i.(string), 64)
+				if err != nil {
+					return nil
+				}
+				f.MinQuantity = v
 			}
 			if i, ok := filter["stepSize"]; ok {
-				f.StepSize = i.(string)
+				v, err := strconv.ParseFloat(i.(string), 64)
+				if err != nil {
+					return nil
+				}
+				f.StepSize = v
+
 			}
 			return f
 		}
