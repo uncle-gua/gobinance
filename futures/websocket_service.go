@@ -76,7 +76,7 @@ func WsAggTradeServe(symbol string, handler WsAggTradeHandler, errHandler ErrHan
 }
 
 // WsCombinedAggTradeServe is similar to WsAggTradeServe, but it handles multiple symbols
-func WsCombinedAggTradeServe(symbols []string, handler WsAggTradeHandler, errHandler ErrHandler) (done chan struct{}, err error) {
+func WsCombinedAggTradeServe(symbols []string, handler WsAggTradeHandler, errHandler ErrHandler) (wsc *wsc.Wsc, done chan struct{}, err error) {
 	endpoint := getCombinedEndpoint()
 	for _, s := range symbols {
 		endpoint += fmt.Sprintf("%s@aggTrade", strings.ToLower(s)) + "/"
@@ -107,7 +107,7 @@ func WsCombinedAggTradeServe(symbols []string, handler WsAggTradeHandler, errHan
 
 		handler(event)
 	}
-	return wsServe(cfg, wsHandler, errHandler)
+	return wsCombinedServe(cfg, wsHandler, errHandler)
 }
 
 // WsMarkPriceEvent define websocket markPriceUpdate event.
@@ -544,7 +544,7 @@ func WsDiffDepthServe(symbol string, handler WsDepthHandler, errHandler ErrHandl
 }
 
 // WsCombinedDepthServe is similar to WsPartialDepthServe, but it for multiple symbols
-func WsCombinedDepthServe(symbolLevels map[string]string, handler WsDepthHandler, errHandler ErrHandler) (done chan struct{}, err error) {
+func WsCombinedDepthServe(symbolLevels map[string]string, handler WsDepthHandler, errHandler ErrHandler) (wsc *wsc.Wsc, done chan struct{}, err error) {
 	endpoint := getCombinedEndpoint()
 	for s, l := range symbolLevels {
 		endpoint += fmt.Sprintf("%s@depth%s", strings.ToLower(s), l) + "/"
@@ -560,11 +560,11 @@ func WsCombinedDepthServe(symbolLevels map[string]string, handler WsDepthHandler
 
 		handler(event)
 	}
-	return wsServe(cfg, wsHandler, errHandler)
+	return wsCombinedServe(cfg, wsHandler, errHandler)
 }
 
 // WsCombinedDiffDepthServe is similar to WsDiffDepthServe, but it for multiple symbols
-func WsCombinedDiffDepthServe(symbols []string, handler WsDepthHandler, errHandler ErrHandler) (done chan struct{}, err error) {
+func WsCombinedDiffDepthServe(symbols []string, handler WsDepthHandler, errHandler ErrHandler) (wsc *wsc.Wsc, done chan struct{}, err error) {
 	endpoint := getCombinedEndpoint()
 	for _, s := range symbols {
 		endpoint += fmt.Sprintf("%s@depth", strings.ToLower(s)) + "/"
@@ -580,7 +580,7 @@ func WsCombinedDiffDepthServe(symbols []string, handler WsDepthHandler, errHandl
 
 		handler(event)
 	}
-	return wsServe(cfg, wsHandler, errHandler)
+	return wsCombinedServe(cfg, wsHandler, errHandler)
 }
 
 // WsDiffDepthServeWithRate serve websocket diff. depth handler with rate.
