@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/uncle-gua/wsc"
 )
 
 // Endpoints
@@ -246,7 +248,7 @@ func WsKlineServe(symbol string, interval string, handler WsKlineHandler, errHan
 }
 
 // WsCombinedKlineServe is similar to WsKlineServe, but it handles multiple symbols with it interval
-func WsCombinedKlineServe(symbolIntervalPair map[string]string, handler WsKlineHandler, errHandler ErrHandler) (done chan struct{}, err error) {
+func WsCombinedKlineServe(symbolIntervalPair map[string]string, handler WsKlineHandler, errHandler ErrHandler) (ws *wsc.Wsc, done chan struct{}, err error) {
 	endpoint := getCombinedEndpoint()
 	for symbol, interval := range symbolIntervalPair {
 		endpoint += fmt.Sprintf("%s@kline_%s", strings.ToLower(symbol), interval) + "/"
@@ -277,7 +279,7 @@ func WsCombinedKlineServe(symbolIntervalPair map[string]string, handler WsKlineH
 
 		handler(event)
 	}
-	return wsServe(cfg, wsHandler, errHandler)
+	return wsCombinedServe(cfg, wsHandler, errHandler)
 }
 
 // WsMiniMarketTickerEvent define websocket mini market ticker event.
