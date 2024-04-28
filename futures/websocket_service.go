@@ -3,7 +3,6 @@ package futures
 import (
 	"errors"
 	"fmt"
-	"log"
 	"strings"
 	"time"
 
@@ -258,7 +257,6 @@ func WsCombinedKlineServe(symbolIntervalPair map[string]string, handler WsKlineH
 	endpoint = endpoint[:len(endpoint)-1]
 	cfg := newWsConfig(endpoint)
 	wsHandler := func(message []byte) {
-		log.Print(string(message))
 		j, err := simplejson.NewJson(message)
 		if err != nil {
 			errHandler(err)
@@ -267,6 +265,9 @@ func WsCombinedKlineServe(symbolIntervalPair map[string]string, handler WsKlineH
 
 		stream := j.Get("stream").MustString()
 		data := j.Get("data").MustMap()
+		if !strings.Contains(stream, "@kline") {
+			return
+		}
 
 		symbol := strings.Split(stream, "@")[0]
 
