@@ -15,7 +15,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/bitly/go-simplejson"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/uncle-gua/gobinance/common"
 )
@@ -183,14 +182,6 @@ const (
 
 func currentTimestamp() int64 {
 	return int64(time.Nanosecond) * time.Now().UnixNano() / int64(time.Millisecond)
-}
-
-func newJSON(data []byte) (j *simplejson.Json, err error) {
-	j, err = simplejson.NewJson(data)
-	if err != nil {
-		return nil, err
-	}
-	return j, nil
 }
 
 // getApiEndpoint return the base endpoint of the WS according the UseTestnet flag

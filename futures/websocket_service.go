@@ -3,9 +3,11 @@ package futures
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strings"
 	"time"
 
+	"github.com/bitly/go-simplejson"
 	"github.com/uncle-gua/wsc"
 )
 
@@ -84,7 +86,7 @@ func WsCombinedAggTradeServe(symbols []string, handler WsAggTradeHandler, errHan
 	endpoint = endpoint[:len(endpoint)-1]
 	cfg := newWsConfig(endpoint)
 	wsHandler := func(message []byte) {
-		j, err := newJSON(message)
+		j, err := simplejson.NewJson(message)
 		if err != nil {
 			errHandler(err)
 			return
@@ -256,7 +258,8 @@ func WsCombinedKlineServe(symbolIntervalPair map[string]string, handler WsKlineH
 	endpoint = endpoint[:len(endpoint)-1]
 	cfg := newWsConfig(endpoint)
 	wsHandler := func(message []byte) {
-		j, err := newJSON(message)
+		log.Print(string(message))
+		j, err := simplejson.NewJson(message)
 		if err != nil {
 			errHandler(err)
 			return
