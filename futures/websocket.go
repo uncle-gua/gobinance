@@ -56,8 +56,8 @@ var wsServe = func(cfg *WsConfig, handler WsHandler, errHandler ErrHandler) (don
 		}
 	})
 
+	ws.Connect()
 	go func() {
-		ws.Connect()
 		for range done {
 			ws.Close()
 			return
