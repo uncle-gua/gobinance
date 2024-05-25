@@ -8,7 +8,7 @@ import (
 )
 
 func TestWsKline(t *testing.T) {
-	if _, err := futures.WsKlineServe("BTCUSDT", "1m", func(event *futures.WsKlineEvent) {
+	if _, _, err := futures.WsKlineServe("BTCUSDT", "1m", func(event *futures.WsKlineEvent) {
 		t.Log(event)
 	}, func(err error) {
 		t.Error(err)
