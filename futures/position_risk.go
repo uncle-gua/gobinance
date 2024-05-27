@@ -37,18 +37,18 @@ func (s *GetPositionRiskService) Do(ctx context.Context, opts ...RequestOption) 
 
 // PositionRisk define position risk info
 type PositionRisk struct {
-	EntryPrice       float64 `json:"entryPrice,string"`
-	MarginType       string  `json:"marginType"`
-	IsAutoAddMargin  bool    `json:"isAutoAddMargin,string"`
-	IsolatedMargin   float64 `json:"isolatedMargin,string"`
-	Leverage         int     `json:"leverage,string"`
-	LiquidationPrice float64 `json:"liquidationPrice,string"`
-	MarkPrice        float64 `json:"markPrice,string"`
-	MaxNotionalValue float64 `json:"maxNotionalValue,string"`
-	PositionAmt      float64 `json:"positionAmt,string"`
-	Symbol           string  `json:"symbol"`
-	UnRealizedProfit float64 `json:"unRealizedProfit,string"`
-	PositionSide     string  `json:"positionSide"`
-	Notional         float64 `json:"notional,string"`
-	IsolatedWallet   float64 `json:"isolatedWallet,string"`
+	EntryPrice       float64          `json:"entryPrice,string"`
+	MarginType       string           `json:"marginType"`
+	IsAutoAddMargin  bool             `json:"isAutoAddMargin,string"`
+	IsolatedMargin   float64          `json:"isolatedMargin,string"`
+	Leverage         int              `json:"leverage,string"`
+	LiquidationPrice float64          `json:"liquidationPrice,string"`
+	MarkPrice        float64          `json:"markPrice,string"`
+	MaxNotionalValue float64          `json:"maxNotionalValue,string"`
+	PositionAmt      float64          `json:"positionAmt,string"`
+	Symbol           string           `json:"symbol"`
+	UnRealizedProfit float64          `json:"unRealizedProfit,string"`
+	PositionSide     PositionSideType `json:"positionSide"`
+	Notional         float64          `json:"notional,string"`
+	IsolatedWallet   float64          `json:"isolatedWallet,string"`
 }
