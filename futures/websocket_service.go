@@ -248,6 +248,33 @@ func WsKlineServe(symbol string, interval string, handler WsKlineHandler, errHan
 	return wsServe(cfg, wsHandler, errHandler)
 }
 
+type WsContractInfoEvent struct {
+	Type           string `json:"e"`
+	Time           int64  `json:"E"`
+	Symbol         string `json:"s"`
+	Pair           string `json:"ps"`
+	ContractType   string `json:"ct"`
+	DeliveryTime   int64  `json:"dt"`
+	OnboardTime    int64  `json:"ot"`
+	ContractStatus string `json:"cs"`
+}
+
+type WsContractInfoHandler func(event *WsContractInfoEvent)
+
+func WsContractInfoServe(handler WsContractInfoHandler, errHandler ErrHandler) (ws *wsc.Wsc, done chan struct{}, err error) {
+	endpoint := fmt.Sprintf("%s/!contractInfo", getWsEndpoint())
+	cfg := newWsConfig(endpoint)
+	wsHandler := func(data []byte) {
+		var event WsContractInfoEvent
+		if err := json.Unmarshal(data, &event); err != nil {
+			errHandler(err)
+			return
+		}
+		handler(&event)
+	}
+	return wsServe(cfg, wsHandler, errHandler)
+}
+
 // WsCombinedKlineServe is similar to WsKlineServe, but it handles multiple symbols with it interval
 func WsCombinedKlineServe(symbolIntervalPair map[string]string, handler WsKlineHandler, errHandler ErrHandler) (ws *wsc.Wsc, done chan struct{}, err error) {
 	endpoint := getCombinedEndpoint()
