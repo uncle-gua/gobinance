@@ -15,6 +15,14 @@ type LongShortRatioService struct {
 	endTime   *int64
 }
 
+type LongShortRatio struct {
+	Symbol         string  `json:"symbol"`
+	LongShortRatio float64 `json:"longShortRatio,string"`
+	LongAccount    float64 `json:"longAccount,string"`
+	ShortAccount   float64 `json:"shortAccount,string"`
+	Timestamp      int64   `json:"timestamp"`
+}
+
 // Symbol set symbol
 func (s *LongShortRatioService) Symbol(symbol string) *LongShortRatioService {
 	s.symbol = symbol
@@ -77,14 +85,6 @@ func (s *LongShortRatioService) Do(ctx context.Context, opts ...RequestOption) (
 	}
 
 	return res, nil
-}
-
-type LongShortRatio struct {
-	Symbol         string `json:"symbol"`
-	LongShortRatio string `json:"longShortRatio"`
-	LongAccount    string `json:"longAccount"`
-	ShortAccount   string `json:"shortAccount"`
-	Timestamp      int64  `json:"timestamp"`
 }
 
 // TopLongShortAccountRatioService list open history data of a symbol.
