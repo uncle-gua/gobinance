@@ -12,7 +12,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"strconv"
 	"time"
 
 	jsoniter "github.com/json-iterator/go"
@@ -190,17 +189,6 @@ func getApiEndpoint() string {
 		return baseApiTestnetUrl
 	}
 	return baseApiMainUrl
-}
-
-func MustFloat64(s string) float64 {
-	def := 0.0
-
-	f, err := strconv.ParseFloat(s, 64)
-	if err != nil {
-		return def
-	}
-
-	return f
 }
 
 // NewClient initialize an API client instance with API key and secret key.
