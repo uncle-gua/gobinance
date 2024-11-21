@@ -25,6 +25,8 @@ type SideType string
 type PositionSideType string
 
 // OrderType define order type
+type StrategyType string
+
 type OrderType string
 
 // TimeInForceType define time in force type of order
@@ -85,6 +87,12 @@ const (
 	PositionSideTypeBoth  PositionSideType = "BOTH"
 	PositionSideTypeLong  PositionSideType = "LONG"
 	PositionSideTypeShort PositionSideType = "SHORT"
+
+	StrategyTypeStop               StrategyType = "STOP"
+	StrategyTypeMarket             StrategyType = "STOP_MARKET"
+	StrategyTypeTakeProfit         StrategyType = "TAKE_PROFIT"
+	StrategyTypeTakeProfitMarket   StrategyType = "TAKE_PROFIT_MARKET"
+	StrategyTypeTrailingStopMarket StrategyType = "TRAILING_STOP_MARKET"
 
 	OrderTypeLimit              OrderType = "LIMIT"
 	OrderTypeMarket             OrderType = "MARKET"
