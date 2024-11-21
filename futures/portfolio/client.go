@@ -89,7 +89,7 @@ const (
 	PositionSideTypeShort PositionSideType = "SHORT"
 
 	StrategyTypeStop               StrategyType = "STOP"
-	StrategyTypeMarket             StrategyType = "STOP_MARKET"
+	StrategyTypeStopMarket         StrategyType = "STOP_MARKET"
 	StrategyTypeTakeProfit         StrategyType = "TAKE_PROFIT"
 	StrategyTypeTakeProfitMarket   StrategyType = "TAKE_PROFIT_MARKET"
 	StrategyTypeTrailingStopMarket StrategyType = "TRAILING_STOP_MARKET"
