@@ -103,22 +103,18 @@ const (
 	NewOrderRespTypeACK    NewOrderRespType = "ACK"
 	NewOrderRespTypeRESULT NewOrderRespType = "RESULT"
 
-	OrderExecutionTypeNew         OrderExecutionType = "NEW"
-	OrderExecutionTypePartialFill OrderExecutionType = "PARTIAL_FILL"
-	OrderExecutionTypeFill        OrderExecutionType = "FILL"
-	OrderExecutionTypeCanceled    OrderExecutionType = "CANCELED"
-	OrderExecutionTypeCalculated  OrderExecutionType = "CALCULATED"
-	OrderExecutionTypeExpired     OrderExecutionType = "EXPIRED"
-	OrderExecutionTypeTrade       OrderExecutionType = "TRADE"
+	OrderExecutionTypeNew        OrderExecutionType = "NEW"
+	OrderExecutionTypeTrade      OrderExecutionType = "TRADE"
+	OrderExecutionTypeCanceled   OrderExecutionType = "CANCELED"
+	OrderExecutionTypeCalculated OrderExecutionType = "CALCULATED"
+	OrderExecutionTypeExpired    OrderExecutionType = "EXPIRED"
+	OrderExecutionTypeAmendment  OrderExecutionType = "AMENDMENT"
 
 	OrderStatusTypeNew             OrderStatusType = "NEW"
 	OrderStatusTypePartiallyFilled OrderStatusType = "PARTIALLY_FILLED"
 	OrderStatusTypeFilled          OrderStatusType = "FILLED"
 	OrderStatusTypeCanceled        OrderStatusType = "CANCELED"
-	OrderStatusTypeRejected        OrderStatusType = "REJECTED"
 	OrderStatusTypeExpired         OrderStatusType = "EXPIRED"
-	OrderStatusTypeNewInsurance    OrderStatusType = "NEW_INSURANCE"
-	OrderStatusTypeNewADL          OrderStatusType = "NEW_ADL"
 
 	SymbolTypeFuture SymbolType = "FUTURE"
 
