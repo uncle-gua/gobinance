@@ -841,7 +841,7 @@ type WsOrderTradeUpdate struct {
 // WsAccountConfigUpdate define account config update
 type WsAccountConfigUpdate struct {
 	Symbol   string `json:"s"`
-	Leverage int64  `json:"l"`
+	Leverage int    `json:"l"`
 }
 
 // WsUserDataHandler handle WsUserDataEvent
