@@ -113,3 +113,36 @@ type AccountPosition struct {
 	IsolatedWallet         float64          `json:"isolatedWallet,string"`
 	UpdateTime             int64            `json:"updateTime"`
 }
+
+// GetSymbolConfig get account info
+type GetSymbolConfig struct {
+	c *Client
+}
+
+// Do send request
+func (s *GetSymbolConfig) Do(ctx context.Context, opts ...RequestOption) (res *SymbolConfig, err error) {
+	r := &request{
+		method:   http.MethodGet,
+		endpoint: "/fapi/v1/symbolConfig",
+		secType:  secTypeSigned,
+	}
+	data, _, err := s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return nil, err
+	}
+	res = new(SymbolConfig)
+	err = json.Unmarshal(data, res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// SymbolConfig define symbol config
+type SymbolConfig struct {
+	Symbol           string     `json:"symbol"`
+	MarginType       MarginType `json:"marginType"`
+	IsAutoAddMargin  bool       `json:"isAutoAddMargin"`
+	Leverage         int        `json:"leverage"`
+	MaxNotionalValue float64    `json:"maxNotionalValue,string"`
+}
