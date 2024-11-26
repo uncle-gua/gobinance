@@ -115,12 +115,12 @@ type AccountPosition struct {
 }
 
 // GetSymbolConfig get account info
-type GetSymbolConfig struct {
+type GetSymbolConfigService struct {
 	c *Client
 }
 
 // Do send request
-func (s *GetSymbolConfig) Do(ctx context.Context, opts ...RequestOption) (res *SymbolConfig, err error) {
+func (s *GetSymbolConfigService) Do(ctx context.Context, opts ...RequestOption) (res *SymbolConfig, err error) {
 	r := &request{
 		method:   http.MethodGet,
 		endpoint: "/fapi/v1/symbolConfig",

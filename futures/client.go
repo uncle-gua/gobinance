@@ -459,6 +459,11 @@ func (c *Client) NewGetAccountService() *GetAccountService {
 	return &GetAccountService{c: c}
 }
 
+// NewGetSymbolConfigService init getting account service
+func (c *Client) NewGetSymbolConfigService() *GetSymbolConfigService {
+	return &GetSymbolConfigService{c: c}
+}
+
 // NewGetBalanceService init getting balance service
 func (c *Client) NewGetBalanceService() *GetBalanceService {
 	return &GetBalanceService{c: c}
