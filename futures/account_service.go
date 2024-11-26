@@ -120,7 +120,7 @@ type GetSymbolConfigService struct {
 }
 
 // Do send request
-func (s *GetSymbolConfigService) Do(ctx context.Context, opts ...RequestOption) (res *SymbolConfig, err error) {
+func (s *GetSymbolConfigService) Do(ctx context.Context, opts ...RequestOption) (res []*SymbolConfig, err error) {
 	r := &request{
 		method:   http.MethodGet,
 		endpoint: "/fapi/v1/symbolConfig",
@@ -130,8 +130,7 @@ func (s *GetSymbolConfigService) Do(ctx context.Context, opts ...RequestOption) 
 	if err != nil {
 		return nil, err
 	}
-	res = new(SymbolConfig)
-	err = json.Unmarshal(data, res)
+	err = json.Unmarshal(data, &res)
 	if err != nil {
 		return nil, err
 	}
