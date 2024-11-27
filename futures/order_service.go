@@ -5,8 +5,11 @@ import (
 	stdjson "encoding/json"
 	"errors"
 	"fmt"
+	"math/rand/v2"
 	"net/http"
+	"strconv"
 	"strings"
+	"time"
 )
 
 // CreateOrderService create order
@@ -154,6 +157,11 @@ func (s *CreateOrderService) createOrder(ctx context.Context, endpoint string, o
 	}
 	if s.newClientOrderID != nil {
 		m["newClientOrderId"] = *s.newClientOrderID
+	} else {
+		pre := "x-dNUwr2u2"
+		rnd := strings.ReplaceAll(fmt.Sprintf("%8x", rand.Uint32()), " ", "0")
+		tim := strconv.FormatInt(time.Now().UTC().UnixNano(), 36)
+		m["newClientOrderId"] = fmt.Sprintf("%s%s%s", pre, tim, rnd)
 	}
 	if s.stopPrice != nil {
 		m["stopPrice"] = *s.stopPrice
