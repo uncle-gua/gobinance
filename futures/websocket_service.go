@@ -1,6 +1,7 @@
 package futures
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"strings"
@@ -852,6 +853,10 @@ func WsUserDataServe(listenKey string, handler WsUserDataHandler, errHandler Err
 	endpoint := fmt.Sprintf("%s/%s", getWsEndpoint(), listenKey)
 	cfg := newWsConfig(endpoint)
 	wsHandler := func(message []byte) {
+		if bytes.Contains(message, []byte("\"e\":\"TRADE_LITE\"")) {
+			return
+		}
+
 		event := new(WsUserDataEvent)
 		err := json.Unmarshal(message, event)
 		if err != nil {
