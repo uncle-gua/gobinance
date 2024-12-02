@@ -43,11 +43,11 @@ func (s *ListBookTickersService) Do(ctx context.Context, opts ...RequestOption) 
 
 // BookTicker define book ticker info
 type BookTicker struct {
-	Symbol      string `json:"symbol"`
-	BidPrice    string `json:"bidPrice"`
-	BidQuantity string `json:"bidQty"`
-	AskPrice    string `json:"askPrice"`
-	AskQuantity string `json:"askQty"`
+	Symbol      string  `json:"symbol"`
+	BidPrice    float64 `json:"bidPrice,string"`
+	BidQuantity float64 `json:"bidQty,string"`
+	AskPrice    float64 `json:"askPrice,string"`
+	AskQuantity float64 `json:"askQty,string"`
 }
 
 // ListPricesService list latest price for a symbol or symbols
@@ -86,8 +86,8 @@ func (s *ListPricesService) Do(ctx context.Context, opts ...RequestOption) (res 
 
 // SymbolPrice define symbol and price pair
 type SymbolPrice struct {
-	Symbol string `json:"symbol"`
-	Price  string `json:"price"`
+	Symbol string  `json:"symbol"`
+	Price  float64 `json:"price,string"`
 }
 
 // ListPriceChangeStatsService show stats of price change in last 24 hours for all symbols
