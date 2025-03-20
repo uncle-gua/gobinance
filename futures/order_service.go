@@ -557,7 +557,7 @@ type Order struct {
 	ActivatePrice           float64                     `json:"activatePrice,string"`
 	PriceRate               float64                     `json:"priceRate,string"`
 	AvgPrice                float64                     `json:"avgPrice,string"`
-	OrigType                string                      `json:"origType"`
+	OrigType                OrderType                   `json:"origType"`
 	PositionSide            PositionSideType            `json:"positionSide"`
 	PriceProtect            bool                        `json:"priceProtect"`
 	ClosePosition           bool                        `json:"closePosition"`
