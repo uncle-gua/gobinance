@@ -39,6 +39,12 @@ type OrderExecutionType string
 // OrderStatusType define order status type
 type OrderStatusType string
 
+// PriceMatchType define price match type
+type PriceMatchType string
+
+// SelfTradePreventionModeType define self trade prevention mode type
+type SelfTradePreventionModeType string
+
 // SymbolType define symbol type
 type SymbolType string
 
@@ -115,6 +121,19 @@ const (
 	OrderStatusTypeFilled          OrderStatusType = "FILLED"
 	OrderStatusTypeCanceled        OrderStatusType = "CANCELED"
 	OrderStatusTypeExpired         OrderStatusType = "EXPIRED"
+
+	PriceMatchTypeOpponent   PriceMatchType = "OPPONENT"
+	PriceMatchTypeOpponent5  PriceMatchType = "OPPONENT_5"
+	PriceMatchTypeOpponent10 PriceMatchType = "OPPONENT_10"
+	PriceMatchTypeOpponent20 PriceMatchType = "OPPONENT_20"
+	PriceMatchTypeQueue      PriceMatchType = "QUEUE"
+	PriceMatchTypeQueue5     PriceMatchType = "QUEUE_5"
+	PriceMatchTypeQueue10    PriceMatchType = "QUEUE_10"
+	PriceMatchTypeQueue20    PriceMatchType = "QUEUE_20"
+
+	SelfTradePreventionModeTypeExpireTaker SelfTradePreventionModeType = "EXPIRE_TAKER"
+	SelfTradePreventionModeTypeExpireMaker SelfTradePreventionModeType = "EXPIRE_MAKER"
+	SelfTradePreventionModeTypeExpireBoth  SelfTradePreventionModeType = "EXPIRE_BOTH"
 
 	SymbolTypeFuture SymbolType = "FUTURE"
 
