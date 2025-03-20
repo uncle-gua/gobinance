@@ -548,6 +548,7 @@ type Order struct {
 	CumQuote                float64                     `json:"cumQuote,string"`
 	Status                  OrderStatusType             `json:"status"`
 	TimeInForce             TimeInForceType             `json:"timeInForce"`
+	GoodTillDate            int64                       `json:"goodTillDate"`
 	Type                    OrderType                   `json:"type"`
 	Side                    SideType                    `json:"side"`
 	StopPrice               float64                     `json:"stopPrice,string"`
