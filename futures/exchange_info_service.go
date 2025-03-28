@@ -65,7 +65,9 @@ type Symbol struct {
 	UnderlyingType        string                   `json:"underlyingType"`
 	UnderlyingSubType     []string                 `json:"underlyingSubType"`
 	SettlePlan            int64                    `json:"settlePlan"`
-	TriggerProtect        string                   `json:"triggerProtect"`
+	TriggerProtect        float64                  `json:"triggerProtect,string"`
+	MarketTakeBound       float64                  `json:"marketTakeBound,string"`
+	LiquidationFee        float64                  `json:"liquidationFee,string"`
 	OrderType             []OrderType              `json:"OrderType"`
 	TimeInForce           []TimeInForceType        `json:"timeInForce"`
 	Filters               []map[string]interface{} `json:"filters"`
