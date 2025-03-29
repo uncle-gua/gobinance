@@ -249,6 +249,7 @@ type CreateOrderResponse struct {
 	StopPrice               float64                     `json:"stopPrice,string"`
 	TimeInForce             TimeInForceType             `json:"timeInForce"`
 	Type                    OrderType                   `json:"type"`
+	OrigType                OrderType                   `json:"origType"`
 	Side                    SideType                    `json:"side"`
 	UpdateTime              int64                       `json:"updateTime"`
 	WorkingType             WorkingType                 `json:"workingType"`
@@ -382,6 +383,7 @@ type AmendOrderResponse struct {
 	CumBase                 float64                     `json:"cumBase,string"`
 	TimeInForce             TimeInForceType             `json:"timeInForce"`
 	Type                    OrderType                   `json:"type"`
+	OrigType                OrderType                   `json:"origType"`
 	ReduceOnly              bool                        `json:"reduceOnly"`
 	ClosePosition           bool                        `json:"closePosition"`
 	Side                    SideType                    `json:"side"`
@@ -389,7 +391,6 @@ type AmendOrderResponse struct {
 	StopPrice               float64                     `json:"stopPrice,string"`
 	WorkingType             WorkingType                 `json:"workingType"`
 	PriceProtect            bool                        `json:"priceProtect"`
-	OrigType                OrderType                   `json:"origType"`
 	PriceMatch              PriceMatchType              `json:"priceMatch"`
 	SelfTradePreventionMode SelfTradePreventionModeType `json:"selfTradePreventionMode"`
 	GoodTillDate            int64                       `json:"goodTillDate"`
@@ -550,6 +551,7 @@ type Order struct {
 	TimeInForce             TimeInForceType             `json:"timeInForce"`
 	GoodTillDate            int64                       `json:"goodTillDate"`
 	Type                    OrderType                   `json:"type"`
+	OrigType                OrderType                   `json:"origType"`
 	Side                    SideType                    `json:"side"`
 	StopPrice               float64                     `json:"stopPrice,string"`
 	Time                    int64                       `json:"time"`
@@ -558,7 +560,6 @@ type Order struct {
 	ActivatePrice           float64                     `json:"activatePrice,string"`
 	PriceRate               float64                     `json:"priceRate,string"`
 	AvgPrice                float64                     `json:"avgPrice,string"`
-	OrigType                OrderType                   `json:"origType"`
 	PositionSide            PositionSideType            `json:"positionSide"`
 	PriceProtect            bool                        `json:"priceProtect"`
 	ClosePosition           bool                        `json:"closePosition"`
@@ -702,11 +703,11 @@ type CancelOrderResponse struct {
 	Symbol           string           `json:"symbol"`
 	TimeInForce      TimeInForceType  `json:"timeInForce"`
 	Type             OrderType        `json:"type"`
+	OrigType         OrderType        `json:"origType"`
 	UpdateTime       int64            `json:"updateTime"`
 	WorkingType      WorkingType      `json:"workingType"`
 	ActivatePrice    float64          `json:"activatePrice,string"`
 	PriceRate        float64          `json:"priceRate,string"`
-	OrigType         string           `json:"origType"`
 	PositionSide     PositionSideType `json:"positionSide"`
 	PriceProtect     bool             `json:"priceProtect"`
 }
@@ -952,13 +953,13 @@ type UserLiquidationOrder struct {
 	CumQuote         float64          `json:"cumQuote,string"`
 	TimeInForce      TimeInForceType  `json:"timeInForce"`
 	Type             OrderType        `json:"type"`
+	OrigType         OrderType        `json:"origType"`
 	ReduceOnly       bool             `json:"reduceOnly"`
 	ClosePosition    bool             `json:"closePosition"`
 	Side             SideType         `json:"side"`
 	PositionSide     PositionSideType `json:"positionSide"`
 	StopPrice        float64          `json:"stopPrice,string"`
 	WorkingType      WorkingType      `json:"workingType"`
-	OrigType         float64          `json:"origType,string"`
 	Time             int64            `json:"time"`
 	UpdateTime       int64            `json:"updateTime"`
 }
