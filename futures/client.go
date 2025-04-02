@@ -122,6 +122,7 @@ const (
 	OrderStatusTypeCanceled        OrderStatusType = "CANCELED"
 	OrderStatusTypeExpired         OrderStatusType = "EXPIRED"
 
+	PriceMatchTypeNone       PriceMatchType = "NONE"
 	PriceMatchTypeOpponent   PriceMatchType = "OPPONENT"
 	PriceMatchTypeOpponent5  PriceMatchType = "OPPONENT_5"
 	PriceMatchTypeOpponent10 PriceMatchType = "OPPONENT_10"
