@@ -282,15 +282,15 @@ func (s *ListAccountTradeService) Do(ctx context.Context, opts ...RequestOption)
 // AccountTrade define account trade
 type AccountTrade struct {
 	Buyer           bool             `json:"buyer"`
-	Commission      string           `json:"commission"`
+	Commission      float64          `json:"commission,string"`
 	CommissionAsset string           `json:"commissionAsset"`
 	ID              int64            `json:"id"`
 	Maker           bool             `json:"maker"`
 	OrderID         int64            `json:"orderId"`
-	Price           string           `json:"price"`
-	Quantity        string           `json:"qty"`
-	QuoteQuantity   string           `json:"quoteQty"`
-	RealizedPnl     string           `json:"realizedPnl"`
+	Price           float64          `json:"price,string"`
+	Quantity        float64          `json:"qty,string"`
+	QuoteQuantity   float64          `json:"quoteQty,string"`
+	RealizedPnl     float64          `json:"realizedPnl,string"`
 	Side            SideType         `json:"side"`
 	PositionSide    PositionSideType `json:"positionSide"`
 	Symbol          string           `json:"symbol"`
