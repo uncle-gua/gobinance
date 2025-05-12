@@ -40,7 +40,7 @@ type PositionRisk struct {
 	Symbol           string           `json:"symbol"`
 	PositionSide     PositionSideType `json:"positionSide"`
 	Leverage         int              `json:"leverage,string"`
-	MarginType       string           `json:"marginType"`
+	MarginType       MarginType       `json:"marginType"`
 	IsAutoAddMargin  bool             `json:"isAutoAddMargin,string"`
 	PositionAmt      float64          `json:"positionAmt,string"`
 	EntryPrice       float64          `json:"entryPrice,string"`
