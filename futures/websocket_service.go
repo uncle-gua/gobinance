@@ -792,16 +792,15 @@ type WsBalance struct {
 
 // WsPosition define position
 type WsPosition struct {
-	Symbol                    string           `json:"s"`
-	Side                      PositionSideType `json:"ps"`
-	Amount                    float64          `json:"pa,string"`
-	MarginType                MarginType       `json:"mt"`
-	IsolatedWallet            float64          `json:"iw,string"`
-	EntryPrice                float64          `json:"ep,string"`
-	MarkPrice                 float64          `json:"mp,string"`
-	UnrealizedPnL             float64          `json:"up,string"`
-	AccumulatedRealized       float64          `json:"cr,string"`
-	MaintenanceMarginRequired string           `json:"mm"`
+	Symbol              string           `json:"s"`
+	PositionSide        PositionSideType `json:"ps"`
+	PositionAmt         float64          `json:"pa,string"`
+	MarginType          MarginType       `json:"mt"`
+	IsolatedWallet      float64          `json:"iw,string"`
+	EntryPrice          float64          `json:"ep,string"`
+	BreakEvenPrice      float64          `json:"bep,string"`
+	UnrealizedPnL       float64          `json:"up,string"`
+	AccumulatedRealized float64          `json:"cr,string"`
 }
 
 // WsOrderTradeUpdate define order trade update
