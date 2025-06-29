@@ -623,3 +623,7 @@ func (c *Client) NewTopLongShortAccountRatioService() *TopLongShortAccountRatioS
 func (c *Client) NewTopLongShortPositionRatioService() *TopLongShortPositionRatioService {
 	return &TopLongShortPositionRatioService{c: c}
 }
+
+func (c *Client) NewTradingStatusService() *TradingStatusService {
+	return &TradingStatusService{c: c}
+}
