@@ -316,15 +316,15 @@ func WsCombinedKlineServe(symbolIntervalPair map[string]string, handler WsKlineH
 
 // WsMiniMarketTickerEvent define websocket mini market ticker event.
 type WsMiniMarketTickerEvent struct {
-	Event       string `json:"e"`
-	Time        int64  `json:"E"`
-	Symbol      string `json:"s"`
-	ClosePrice  string `json:"c"`
-	OpenPrice   string `json:"o"`
-	HighPrice   string `json:"h"`
-	LowPrice    string `json:"l"`
-	Volume      string `json:"v"`
-	QuoteVolume string `json:"q"`
+	Event       string  `json:"e"`
+	Time        int64   `json:"E"`
+	Symbol      string  `json:"s"`
+	ClosePrice  float64 `json:"c,string"`
+	OpenPrice   float64 `json:"o,string"`
+	HighPrice   float64 `json:"h,string"`
+	LowPrice    float64 `json:"l,string"`
+	Volume      float64 `json:"v,string"`
+	QuoteVolume float64 `json:"q,string"`
 }
 
 // WsMiniMarketTickerHandler handle websocket that pushes 24hr rolling window mini-ticker statistics for a single symbol.
