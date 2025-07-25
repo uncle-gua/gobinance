@@ -536,6 +536,12 @@ func WsAllLiquidationOrderServe(handler WsLiquidationOrderHandler, errHandler Er
 	return wsServe(cfg, wsHandler, errHandler)
 }
 
+// WsDepthEvent define websocket combined depth book event
+type WsCombinedDepthEvent struct {
+	Stream string       `json:"stream"`
+	Data   WsDepthEvent `json:"data"`
+}
+
 // WsDepthEvent define websocket depth book event
 type WsDepthEvent struct {
 	Event            string `json:"e"`
@@ -551,6 +557,9 @@ type WsDepthEvent struct {
 
 // WsDepthHandler handle websocket depth event
 type WsDepthHandler func(event *WsDepthEvent)
+
+// WsDepthHandler handle websocket combined depth event
+type WsCombinedDepthHandler func(event *WsCombinedDepthEvent)
 
 func wsPartialDepthServe(symbol string, levels int, rate *time.Duration, handler WsDepthHandler, errHandler ErrHandler) (ws *wsc.Wsc, done chan struct{}, err error) {
 	if levels != 5 && levels != 10 && levels != 20 {
@@ -576,15 +585,17 @@ func WsDiffDepthServe(symbol string, handler WsDepthHandler, errHandler ErrHandl
 }
 
 // WsCombinedDepthServe is similar to WsPartialDepthServe, but it for multiple symbols
-func WsCombinedDepthServe(symbolLevels map[string]string, handler WsDepthHandler, errHandler ErrHandler) (ws *wsc.Wsc, done chan struct{}, err error) {
+func WsCombinedDepthServe(symbolLevels map[string]string, handler WsCombinedDepthHandler, errHandler ErrHandler) (ws *wsc.Wsc, done chan struct{}, err error) {
 	endpoint := getCombinedEndpoint()
 	for s, l := range symbolLevels {
 		endpoint += fmt.Sprintf("%s@depth%s", strings.ToLower(s), l) + "/"
 	}
 	endpoint = endpoint[:len(endpoint)-1]
+	fmt.Println(endpoint)
 	cfg := newWsConfig(endpoint)
 	wsHandler := func(message []byte) {
-		event := new(WsDepthEvent)
+		event := new(WsCombinedDepthEvent)
+		fmt.Println(string(message))
 		if err := json.Unmarshal(message, event); err != nil {
 			errHandler(err)
 			return
@@ -596,7 +607,7 @@ func WsCombinedDepthServe(symbolLevels map[string]string, handler WsDepthHandler
 }
 
 // WsCombinedDiffDepthServe is similar to WsDiffDepthServe, but it for multiple symbols
-func WsCombinedDiffDepthServe(symbols []string, handler WsDepthHandler, errHandler ErrHandler) (wsc *wsc.Wsc, done chan struct{}, err error) {
+func WsCombinedDiffDepthServe(symbols []string, handler WsCombinedDepthHandler, errHandler ErrHandler) (wsc *wsc.Wsc, done chan struct{}, err error) {
 	endpoint := getCombinedEndpoint()
 	for _, s := range symbols {
 		endpoint += fmt.Sprintf("%s@depth", strings.ToLower(s)) + "/"
@@ -604,7 +615,7 @@ func WsCombinedDiffDepthServe(symbols []string, handler WsDepthHandler, errHandl
 	endpoint = endpoint[:len(endpoint)-1]
 	cfg := newWsConfig(endpoint)
 	wsHandler := func(message []byte) {
-		event := new(WsDepthEvent)
+		event := new(WsCombinedDepthEvent)
 		if err := json.Unmarshal(message, event); err != nil {
 			errHandler(err)
 			return
