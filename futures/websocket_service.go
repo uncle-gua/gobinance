@@ -591,11 +591,9 @@ func WsCombinedDepthServe(symbolLevels map[string]string, handler WsCombinedDept
 		endpoint += fmt.Sprintf("%s@depth%s", strings.ToLower(s), l) + "/"
 	}
 	endpoint = endpoint[:len(endpoint)-1]
-	fmt.Println(endpoint)
 	cfg := newWsConfig(endpoint)
 	wsHandler := func(message []byte) {
 		event := new(WsCombinedDepthEvent)
-		fmt.Println(string(message))
 		if err := json.Unmarshal(message, event); err != nil {
 			errHandler(err)
 			return
