@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/bitly/go-simplejson v0.5.1
 	github.com/json-iterator/go v1.1.12
-	github.com/uncle-gua/wsc v0.0.0-20250906033157-2708e64e05b9
+	github.com/uncle-gua/wsc v0.0.0-20250906054057-877d6b7adecd
 )
 
 require (

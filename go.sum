@@ -30,6 +30,8 @@ github.com/uncle-gua/wsc v0.0.0-20240515023552-65e07101f52b h1:aKu+XOO6/GVj65EnG
 github.com/uncle-gua/wsc v0.0.0-20240515023552-65e07101f52b/go.mod h1:MioSlBlZUSr1+cijbq/6GBy7NXt/oIYDVeS5N2qF9l0=
 github.com/uncle-gua/wsc v0.0.0-20250906033157-2708e64e05b9 h1:RG5TylByFjRpfP0/f0JeeEwmds7qqB+CWy72PgW13TY=
 github.com/uncle-gua/wsc v0.0.0-20250906033157-2708e64e05b9/go.mod h1:MioSlBlZUSr1+cijbq/6GBy7NXt/oIYDVeS5N2qF9l0=
+github.com/uncle-gua/wsc v0.0.0-20250906054057-877d6b7adecd h1:5YTm1No3R68RfWoRDgq3bSn9M84S4t5ysN5eOq48h3Q=
+github.com/uncle-gua/wsc v0.0.0-20250906054057-877d6b7adecd/go.mod h1:MioSlBlZUSr1+cijbq/6GBy7NXt/oIYDVeS5N2qF9l0=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=
