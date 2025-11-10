@@ -182,20 +182,25 @@ func (s *ChangePositionModeService) Do(ctx context.Context, opts ...RequestOptio
 }
 
 // GetPositionModeService get user's position mode
-type GetPositionModeService struct {
+type GetAccountConfigService struct {
 	c *Client
 }
 
 // Response of user's position mode
-type PositionMode struct {
-	DualSidePosition bool `json:"dualSidePosition"`
+type AccountConfig struct {
+	FeeTier           int  `json:"feeTier"`
+	CanTrade          bool `json:"canTrade"`
+	CanDeposit        bool `json:"canDeposit"`
+	CanWithdraw       bool `json:"canWithdraw"`
+	MultiAssetsMargin bool `json:"multiAssetsMargin"`
+	DualSidePosition  bool `json:"dualSidePosition"`
 }
 
 // Do send request
-func (s *GetPositionModeService) Do(ctx context.Context, opts ...RequestOption) (res *PositionMode, err error) {
+func (s *GetAccountConfigService) Do(ctx context.Context, opts ...RequestOption) (res *AccountConfig, err error) {
 	r := &request{
 		method:   http.MethodGet,
-		endpoint: "/fapi/v1/positionSide/dual",
+		endpoint: "/fapi/v1/accountConfig",
 		secType:  secTypeSigned,
 	}
 	r.setFormParams(params{})
@@ -203,7 +208,7 @@ func (s *GetPositionModeService) Do(ctx context.Context, opts ...RequestOption) 
 	if err != nil {
 		return nil, err
 	}
-	res = &PositionMode{}
+	res = &AccountConfig{}
 	err = json.Unmarshal(data, &res)
 	if err != nil {
 		return nil, err
