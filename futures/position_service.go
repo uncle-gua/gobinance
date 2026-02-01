@@ -148,6 +148,33 @@ func (s *UpdatePositionMarginService) Do(ctx context.Context, opts ...RequestOpt
 	return nil
 }
 
+type PositionMode struct {
+	DualSidePosition bool `json:"dualSidePosition"`
+}
+
+// ChangePositionModeService change user's position mode
+type GetPositionModeService struct {
+	c *Client
+}
+
+// Do send request
+func (s *GetPositionModeService) Do(ctx context.Context, opts ...RequestOption) (bool, error) {
+	r := &request{
+		method:   http.MethodGet,
+		endpoint: "/fapi/v1/positionSide/dual",
+		secType:  secTypeSigned,
+	}
+	data, _, err := s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return false, err
+	}
+	mode := new(PositionMode)
+	if err := json.Unmarshal(data, mode); err != nil {
+		return false, err
+	}
+	return mode.DualSidePosition, nil
+}
+
 // ChangePositionModeService change user's position mode
 type ChangePositionModeService struct {
 	c        *Client
