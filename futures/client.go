@@ -579,6 +579,11 @@ func (c *Client) NewUpdatePositionMarginService() *UpdatePositionMarginService {
 	return &UpdatePositionMarginService{c: c}
 }
 
+// NewGetPositionModeService init get position mode service
+func (c *Client) NewGetPositionModeService() *GetPositionModeService {
+	return &GetPositionModeService{c: c}
+}
+
 // NewChangePositionModeService init change position mode service
 func (c *Client) NewChangePositionModeService() *ChangePositionModeService {
 	return &ChangePositionModeService{c: c}
