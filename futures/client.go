@@ -434,6 +434,11 @@ func (c *Client) NewCreateOrderService() *CreateOrderService {
 	return &CreateOrderService{c: c}
 }
 
+// NewCreateAlgoOrderService init creating order service
+func (c *Client) NewCreateAlgoOrderService() *CreateAlgoOrderService {
+	return &CreateAlgoOrderService{c: c}
+}
+
 // NewAmendOrderService init amend order service
 func (c *Client) NewAmendOrderService() *AmendOrderService {
 	return &AmendOrderService{c: c}
