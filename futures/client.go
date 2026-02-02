@@ -81,7 +81,7 @@ var json = jsoniter.ConfigCompatibleWithStandardLibrary
 // Endpoints
 const (
 	baseApiMainUrl    = "https://fapi.binance.com"
-	baseApiTestnetUrl = "https://testnet.binancefuture.com"
+	baseApiTestnetUrl = "https://demo-fapi.binance.com"
 )
 
 // Global enums
