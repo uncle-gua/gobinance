@@ -8,7 +8,7 @@ import (
 )
 
 func TestKline(t *testing.T) {
-	client := futures.NewClient("", "")
+	client := futures.NewClient("", "", false)
 	res, err := client.NewKlinesService().Symbol("BTCUSDT").Limit(1500).Interval("1m").Do(context.Background())
 	if err != nil {
 		t.Error(err)

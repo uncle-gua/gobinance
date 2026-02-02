@@ -290,8 +290,8 @@ func NewProxiedClient(apiKey, secretKey, proxyUrl string) *Client {
 }
 
 // NewFuturesClient initialize client for futures API
-func NewFuturesClient(apiKey, secretKey string) *futures.Client {
-	return futures.NewClient(apiKey, secretKey)
+func NewFuturesClient(apiKey, secretKey string, useTestnet bool) *futures.Client {
+	return futures.NewClient(apiKey, secretKey, useTestnet)
 }
 
 // NewDeliveryClient initialize client for coin-M futures API

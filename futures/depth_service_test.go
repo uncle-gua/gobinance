@@ -8,7 +8,7 @@ import (
 )
 
 func TestDepth(t *testing.T) {
-	client := futures.NewClient("", "")
+	client := futures.NewClient("", "", false)
 	resp, err := client.NewDepthService().Symbol("BTCUSDT").Limit(100).Do(context.Background())
 	if err != nil {
 		t.Error(t)
