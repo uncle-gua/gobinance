@@ -236,30 +236,90 @@ func (s *CreateAlgoOrderService) Do(ctx context.Context, opts ...RequestOption) 
 
 // CreateOrderResponse define create order response
 type CreateAlgoOrderResponse struct {
+	AlgoID                  int64                       `json:"algoId"`
+	ClientAlgoId            string                      `json:"clientAlgoId"`
+	AlgoType                string                      `json:"algoType"`
 	Symbol                  string                      `json:"symbol"`
-	OrderID                 int64                       `json:"orderId"`
-	ClientOrderID           string                      `json:"clientOrderId"`
-	Price                   float64                     `json:"price,string"`
-	OrigQuantity            float64                     `json:"origQty,string"`
-	ExecutedQuantity        float64                     `json:"executedQty,string"`
-	CumQuote                float64                     `json:"cumQuote,string"`
-	ReduceOnly              bool                        `json:"reduceOnly"`
-	Status                  OrderStatusType             `json:"status"`
-	StopPrice               float64                     `json:"stopPrice,string"`
-	TimeInForce             TimeInForceType             `json:"timeInForce"`
-	Type                    OrderType                   `json:"type"`
-	OrigType                OrderType                   `json:"origType"`
 	Side                    SideType                    `json:"side"`
-	UpdateTime              int64                       `json:"updateTime"`
-	WorkingType             WorkingType                 `json:"workingType"`
-	ActivatePrice           float64                     `json:"activatePrice,string"`
-	PriceRate               float64                     `json:"priceRate,string"`
-	AvgPrice                float64                     `json:"avgPrice,string"`
 	PositionSide            PositionSideType            `json:"positionSide"`
+	TimeInForce             TimeInForceType             `json:"timeInForce"`
+	Quantity                float64                     `json:"quantity,string"`
+	AlgoStatus              string                      `json:"algoStatus"`
+	TriggerPrice            float64                     `json:"triggerPrice,string"`
+	Price                   float64                     `json:"price,string"`
+	SelfTradePreventionMode SelfTradePreventionModeType `json:"selfTradePreventionMode"`
+	WorkingType             WorkingType                 `json:"workingType"`
+	PriceMatch              PriceMatchType              `json:"priceMatch"`
 	ClosePosition           bool                        `json:"closePosition"`
 	PriceProtect            bool                        `json:"priceProtect"`
-	PriceMatch              PriceMatchType              `json:"priceMatch"`
+	ReduceOnly              bool                        `json:"reduceOnly"`
+	ActivatePrice           float64                     `json:"activatePrice,string"`
+	CallbackRate            float64                     `json:"callbackRate,string"`
+	CreateTime              int64                       `json:"createTime"`
+	UpdateTime              int64                       `json:"updateTime"`
+	TriggerTime             int64                       `json:"triggerTime"`
+	GoodTillDate            int64                       `json:"goodTillDate"`
+	RateLimitOrder10s       string                      `json:"rateLimitOrder10s,omitempty"`
+	RateLimitOrder1m        string                      `json:"rateLimitOrder1m,omitempty"`
+}
+
+// ListOpenOrdersService list opened orders
+type ListAlgoOpenOrdersService struct {
+	c      *Client
+	symbol string
+}
+
+// Symbol set symbol
+func (s *ListAlgoOpenOrdersService) Symbol(symbol string) *ListAlgoOpenOrdersService {
+	s.symbol = symbol
+	return s
+}
+
+// Do send request
+func (s *ListAlgoOpenOrdersService) Do(ctx context.Context, opts ...RequestOption) (res []*AlgoOrder, err error) {
+	r := &request{
+		method:   http.MethodGet,
+		endpoint: "/fapi/v1/openAlgoOrders",
+		secType:  secTypeSigned,
+	}
+	if s.symbol != "" {
+		r.setParam("symbol", s.symbol)
+	}
+	data, _, err := s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return []*AlgoOrder{}, err
+	}
+	res = make([]*AlgoOrder, 0)
+	err = json.Unmarshal(data, &res)
+	if err != nil {
+		return []*AlgoOrder{}, err
+	}
+	return res, nil
+}
+
+type AlgoOrder struct {
+	AlgoID                  int64                       `json:"algoId"`
+	ClientAlgoId            string                      `json:"clientAlgoId"`
+	AlgoType                string                      `json:"algoType"`
+	Symbol                  string                      `json:"symbol"`
+	Side                    SideType                    `json:"side"`
+	PositionSide            PositionSideType            `json:"positionSide"`
+	TimeInForce             TimeInForceType             `json:"timeInForce"`
+	Quantity                float64                     `json:"quantity,string"`
+	AlgoStatus              string                      `json:"algoStatus"`
+	TriggerPrice            float64                     `json:"triggerPrice,string"`
+	Price                   float64                     `json:"price,string"`
 	SelfTradePreventionMode SelfTradePreventionModeType `json:"selfTradePreventionMode"`
+	WorkingType             WorkingType                 `json:"workingType"`
+	PriceMatch              PriceMatchType              `json:"priceMatch"`
+	ClosePosition           bool                        `json:"closePosition"`
+	PriceProtect            bool                        `json:"priceProtect"`
+	ReduceOnly              bool                        `json:"reduceOnly"`
+	ActivatePrice           float64                     `json:"activatePrice,string"`
+	CallbackRate            float64                     `json:"callbackRate,string"`
+	CreateTime              int64                       `json:"createTime"`
+	UpdateTime              int64                       `json:"updateTime"`
+	TriggerTime             int64                       `json:"triggerTime"`
 	GoodTillDate            int64                       `json:"goodTillDate"`
 	RateLimitOrder10s       string                      `json:"rateLimitOrder10s,omitempty"`
 	RateLimitOrder1m        string                      `json:"rateLimitOrder1m,omitempty"`

@@ -446,6 +446,11 @@ func (c *Client) NewCreateAlgoOrderService() *CreateAlgoOrderService {
 	return &CreateAlgoOrderService{c: c}
 }
 
+// NewListAlgoOpenOrdersService init list algo open order service
+func (c *Client) NewListAlgoOpenOrdersService() *ListAlgoOpenOrdersService {
+	return &ListAlgoOpenOrdersService{c: c}
+}
+
 // NewAmendOrderService init amend order service
 func (c *Client) NewAmendOrderService() *AmendOrderService {
 	return &AmendOrderService{c: c}
