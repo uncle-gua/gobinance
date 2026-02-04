@@ -2,50 +2,23 @@ package futures
 
 import (
 	"context"
-	"errors"
+	"fmt"
+	"math/rand/v2"
 	"net/http"
+	"strconv"
+	"strings"
+	"time"
 )
 
-// AlgoOrderStatusType defines algorithmic order status type.
-type AlgoOrderStatusType string
-
-const (
-	AlgoOrderStatusTypeNew AlgoOrderStatusType = "NEW"
-	// AlgoOrderStatusTypePartiallyFilled AlgoOrderStatusType = "PARTIALLY_FILLED"
-	// AlgoOrderStatusTypeFilled          AlgoOrderStatusType = "FILLED"
-	AlgoOrderStatusTypeCanceled AlgoOrderStatusType = "CANCELED"
-	AlgoOrderStatusTypeRejected AlgoOrderStatusType = "REJECTED"
-	AlgoOrderStatusTypeExpired  AlgoOrderStatusType = "EXPIRED"
-)
-
-// OrderAlgoType defines the algorithmic order type.
-type OrderAlgoType string
-
-const (
-	OrderAlgoTypeConditional OrderAlgoType = "CONDITIONAL"
-)
-
-// AlgoOrderType defines the type of algorithmic order.
-type AlgoOrderType string
-
-const (
-	AlgoOrderTypeStop               AlgoOrderType = "STOP"
-	AlgoOrderTypeStopMarket         AlgoOrderType = "STOP_MARKET"
-	AlgoOrderTypeTakeProfitMarket   AlgoOrderType = "TAKE_PROFIT_MARKET"
-	AlgoOrderTypeTakeProfit         AlgoOrderType = "TAKE_PROFIT"
-	AlgoOrderTypeTrailingStopMarket AlgoOrderType = "TRAILING_STOP_MARKET"
-)
-
-// CreateAlgoOrderService creates a new algorithmic order.
+// CreateAlgoOrderService create order
 type CreateAlgoOrderService struct {
 	c                       *Client
-	algoType                OrderAlgoType // required
-	symbol                  string        // required
-	side                    SideType      // required
-	_type                   AlgoOrderType // required
+	symbol                  string
+	side                    SideType
 	positionSide            *PositionSideType
-	timeInForceType         *TimeInForceType
-	quantity                *string // Cannot be sent with closePosition=true(Close-All)
+	orderType               OrderType
+	timeInForce             *TimeInForceType
+	quantity                string
 	price                   *string
 	triggerPrice            *string
 	workingType             *WorkingType
@@ -56,540 +29,238 @@ type CreateAlgoOrderService struct {
 	activatePrice           *string
 	callbackRate            *string
 	clientAlgoId            *string
-	selfTradePreventionMode *SelfTradePreventionMode
-	goodTillDate            *int64
-
-	param map[string]any
+	newOrderRespType        NewOrderRespType
+	selfTradePreventionMode *SelfTradePreventionModeType
+	goodTillDate            int64
 }
 
-// newCreateAlgoOrderService creates a new CreateAlgoOrderService instance.
-func newCreateAlgoOrderService(c *Client) *CreateAlgoOrderService {
-	return &CreateAlgoOrderService{
-		c:        c,
-		algoType: OrderAlgoTypeConditional, // default CONDITIONAL
-		param: map[string]any{
-			"algoType": OrderAlgoTypeConditional,
-		},
-	}
-}
-
-// AlgoType sets the algorithmic order type.
-func (s *CreateAlgoOrderService) AlgoType(algoType OrderAlgoType) *CreateAlgoOrderService {
-	s.algoType = algoType
-	s.param["algoType"] = algoType
-	return s
-}
-
-// Symbol sets the trading symbol.
+// Symbol set symbol
 func (s *CreateAlgoOrderService) Symbol(symbol string) *CreateAlgoOrderService {
 	s.symbol = symbol
-	s.param["symbol"] = symbol
 	return s
 }
 
-// Side sets the order side.
+// Side set side
 func (s *CreateAlgoOrderService) Side(side SideType) *CreateAlgoOrderService {
 	s.side = side
-	s.param["side"] = side
 	return s
 }
 
-// Type sets the algorithmic order type.
-func (s *CreateAlgoOrderService) Type(_type AlgoOrderType) *CreateAlgoOrderService {
-	s._type = _type
-	s.param["type"] = _type
-	return s
-}
-
-// PositionSide sets the position side.
+// PositionSide set side
 func (s *CreateAlgoOrderService) PositionSide(positionSide PositionSideType) *CreateAlgoOrderService {
 	s.positionSide = &positionSide
-	s.param["positionSide"] = positionSide
 	return s
 }
 
-// TimeInForce sets the time in force type.
-func (s *CreateAlgoOrderService) TimeInForce(timeInForceType TimeInForceType) *CreateAlgoOrderService {
-	s.timeInForceType = &timeInForceType
-	s.param["timeInForce"] = timeInForceType
+// Type set type
+func (s *CreateAlgoOrderService) Type(orderType OrderType) *CreateAlgoOrderService {
+	s.orderType = orderType
 	return s
 }
 
-// Quantity sets the order quantity.
+// TimeInForce set timeInForce
+func (s *CreateAlgoOrderService) TimeInForce(timeInForce TimeInForceType) *CreateAlgoOrderService {
+	s.timeInForce = &timeInForce
+	return s
+}
+
+// GoodTillDate set goodTillDate
+func (s *CreateAlgoOrderService) GoodTillDate(goodTillDate int64) *CreateAlgoOrderService {
+	s.goodTillDate = goodTillDate
+	return s
+}
+
+// Quantity set quantity
 func (s *CreateAlgoOrderService) Quantity(quantity string) *CreateAlgoOrderService {
-	s.quantity = &quantity
-	s.param["quantity"] = quantity
+	s.quantity = quantity
 	return s
 }
 
-// Price sets the order price.
-func (s *CreateAlgoOrderService) Price(price string) *CreateAlgoOrderService {
-	s.price = &price
-	s.param["price"] = price
-	return s
-}
-
-// TriggerPrice sets the trigger price.
-func (s *CreateAlgoOrderService) TriggerPrice(triggerPrice string) *CreateAlgoOrderService {
-	s.triggerPrice = &triggerPrice
-	s.param["triggerPrice"] = triggerPrice
-	return s
-}
-
-// WorkingType sets the working type.
-func (s *CreateAlgoOrderService) WorkingType(workingType WorkingType) *CreateAlgoOrderService {
-	s.workingType = &workingType
-	s.param["workingType"] = workingType
-	return s
-}
-
-// PriceMatch sets the price match type.
-func (s *CreateAlgoOrderService) PriceMatch(priceMatch PriceMatchType) *CreateAlgoOrderService {
-	s.priceMatch = &priceMatch
-	s.param["priceMatch"] = priceMatch
-	return s
-}
-
-// ClosePosition sets whether to close the position.
-func (s *CreateAlgoOrderService) ClosePosition(closePosition bool) *CreateAlgoOrderService {
-	s.closePosition = &closePosition
-	if closePosition {
-		s.param["closePosition"] = "true"
-	} else {
-		s.param["closePosition"] = "false"
-	}
-	return s
-}
-
-// PriceProtect sets whether to enable price protection.
-func (s *CreateAlgoOrderService) PriceProtect(priceProtect bool) *CreateAlgoOrderService {
-	s.priceProtect = &priceProtect
-	if priceProtect {
-		s.param["priceProtect"] = "true"
-	} else {
-		s.param["priceProtect"] = "false"
-	}
-	return s
-}
-
-// ReduceOnly sets whether the order is reduce-only.
+// ReduceOnly set reduceOnly
 func (s *CreateAlgoOrderService) ReduceOnly(reduceOnly bool) *CreateAlgoOrderService {
 	s.reduceOnly = &reduceOnly
-	if reduceOnly {
-		s.param["reduceOnly"] = "true"
-	} else {
-		s.param["reduceOnly"] = "false"
-	}
 	return s
 }
 
-// ActivationPrice sets the activation price for trailing stop orders.
-// deprecated, use ActivatePrice instead
-func (s *CreateAlgoOrderService) ActivationPrice(activationPrice string) *CreateAlgoOrderService {
-	return s.ActivatePrice(activationPrice)
-}
-
-func (s *CreateAlgoOrderService) ActivatePrice(activatePrice string) *CreateAlgoOrderService {
-	s.activatePrice = &activatePrice
-	if activatePrice != "" {
-		s.param["activatePrice"] = activatePrice
-	}
+// Price set price
+func (s *CreateAlgoOrderService) Price(price string) *CreateAlgoOrderService {
+	s.price = &price
 	return s
 }
 
-// CallbackRate sets the callback rate for trailing stop orders.
-func (s *CreateAlgoOrderService) CallbackRate(callbackRate string) *CreateAlgoOrderService {
-	s.callbackRate = &callbackRate
-	if callbackRate != "" {
-		s.param["callbackRate"] = callbackRate
-	}
-	return s
-}
-
-// ClientAlgoId sets the client-defined algorithmic order ID.
+// NewClientOrderID set newClientOrderID
 func (s *CreateAlgoOrderService) ClientAlgoId(clientAlgoId string) *CreateAlgoOrderService {
 	s.clientAlgoId = &clientAlgoId
-	if clientAlgoId != "" {
-		s.param["clientAlgoId"] = clientAlgoId
-	}
 	return s
 }
 
-// SelfTradePreventionMode sets the self-trade prevention mode.
-func (s *CreateAlgoOrderService) SelfTradePreventionMode(selfTradePreventionMode SelfTradePreventionMode) *CreateAlgoOrderService {
+// ActivatePrice set activatePrice
+func (s *CreateAlgoOrderService) ActivatePrice(activatePrice string) *CreateAlgoOrderService {
+	s.activatePrice = &activatePrice
+	return s
+}
+
+// ActivatePrice set activatePrice
+func (s *CreateAlgoOrderService) TriggerPrice(triggerPrice string) *CreateAlgoOrderService {
+	s.triggerPrice = &triggerPrice
+	return s
+}
+
+// WorkingType set workingType
+func (s *CreateAlgoOrderService) WorkingType(workingType WorkingType) *CreateAlgoOrderService {
+	s.workingType = &workingType
+	return s
+}
+
+// CallbackRate set callbackRate
+func (s *CreateAlgoOrderService) CallbackRate(callbackRate string) *CreateAlgoOrderService {
+	s.callbackRate = &callbackRate
+	return s
+}
+
+// PriceProtect set priceProtect
+func (s *CreateAlgoOrderService) PriceProtect(priceProtect bool) *CreateAlgoOrderService {
+	s.priceProtect = &priceProtect
+	return s
+}
+
+// PriceMatch set priceMatch
+func (s *CreateAlgoOrderService) PriceMatch(priceMatch PriceMatchType) *CreateAlgoOrderService {
+	s.priceMatch = &priceMatch
+	return s
+}
+
+// SelfTradePreventionMode set selfTradePreventionMode
+func (s *CreateAlgoOrderService) SelfTradePreventionMode(selfTradePreventionMode SelfTradePreventionModeType) *CreateAlgoOrderService {
 	s.selfTradePreventionMode = &selfTradePreventionMode
-	if selfTradePreventionMode != "" {
-		s.param["selfTradePreventionMode"] = selfTradePreventionMode
-	}
 	return s
 }
 
-// GoodTillDate sets the good till date for the order.
-func (s *CreateAlgoOrderService) GoodTillDate(goodTillDate int64) *CreateAlgoOrderService {
-	s.goodTillDate = &goodTillDate
-	if goodTillDate != 0 {
-		s.param["goodTillDate"] = goodTillDate
-	}
+// NewOrderResponseType set newOrderResponseType
+func (s *CreateAlgoOrderService) NewOrderResponseType(newOrderResponseType NewOrderRespType) *CreateAlgoOrderService {
+	s.newOrderRespType = newOrderResponseType
 	return s
 }
 
-// CreateAlgoOrderResp represents the response from creating an algorithmic order.
-type CreateAlgoOrderResp struct {
-	AlgoId                  int64                   `json:"algoId"`
-	ClientAlgoId            string                  `json:"clientAlgoId"`
-	AlgoType                OrderAlgoType           `json:"algoType"`
-	OrderType               AlgoOrderType           `json:"orderType"`
-	Symbol                  string                  `json:"symbol"`
-	Side                    SideType                `json:"side"`
-	PositionSide            PositionSideType        `json:"positionSide"`
-	TimeInForce             TimeInForceType         `json:"timeInForce"`
-	Quantity                string                  `json:"quantity"`
-	AlgoStatus              AlgoOrderStatusType     `json:"algoStatus"`
-	TriggerPrice            string                  `json:"triggerPrice"`
-	Price                   string                  `json:"price"`
-	IcebergQuantity         *int64                  `json:"icebergQuantity,omitempty"`
-	SelfTradePreventionMode SelfTradePreventionMode `json:"selfTradePreventionMode"`
-	WorkingType             WorkingType             `json:"workingType"`
-	PriceMatch              PriceMatchType          `json:"priceMatch"`
-	ClosePosition           bool                    `json:"closePosition"`
-	PriceProtect            bool                    `json:"priceProtect"`
-	ReduceOnly              bool                    `json:"reduceOnly"`
-	ActivatePrice           string                  `json:"activatePrice"`
-	CallbackRate            string                  `json:"callbackRate"`
-	CreateTime              int64                   `json:"createTime"`
-	UpdateTime              int64                   `json:"updateTime"`
-	TriggerTime             int64                   `json:"triggerTime"`
-	GoodTillDate            int64                   `json:"goodTillDate"`
+// ClosePosition set closePosition
+func (s *CreateAlgoOrderService) ClosePosition(closePosition bool) *CreateAlgoOrderService {
+	s.closePosition = &closePosition
+	return s
 }
 
-// Do sends the request to create an algorithmic order.
-func (s *CreateAlgoOrderService) Do(ctx context.Context, opts ...RequestOption) (*CreateAlgoOrderResp, error) {
+func (s *CreateAlgoOrderService) createOrder(ctx context.Context, endpoint string, opts ...RequestOption) (data []byte, header *http.Header, err error) {
 	r := &request{
 		method:   http.MethodPost,
-		endpoint: "/fapi/v1/algoOrder",
+		endpoint: endpoint,
 		secType:  secTypeSigned,
 	}
-	r.setFormParams(s.param)
-	data, _, err := s.c.callAPI(ctx, r, opts...)
-	if err != nil {
-		return nil, err
+	m := params{
+		"algoType":         "CONDITIONAL",
+		"symbol":           s.symbol,
+		"side":             s.side,
+		"type":             s.orderType,
+		"quantity":         s.quantity,
+		"newOrderRespType": s.newOrderRespType,
 	}
-	res := &CreateAlgoOrderResp{}
-	err = json.Unmarshal(data, res)
-	if err != nil {
-		return nil, err
+	if s.positionSide != nil {
+		m["positionSide"] = *s.positionSide
 	}
-	return res, nil
-}
-
-// CancelAlgoOrderService cancels an algorithmic order.
-type CancelAlgoOrderService struct {
-	c            *Client
-	algoID       int64
-	clientAlgoID *string
-}
-
-// AlgoID sets the algorithmic order ID.
-func (s *CancelAlgoOrderService) AlgoID(algoID int64) *CancelAlgoOrderService {
-	s.algoID = algoID
-	return s
-}
-
-// ClientAlgoID sets the client-defined algorithmic order ID.
-func (s *CancelAlgoOrderService) ClientAlgoID(clientAlgoID string) *CancelAlgoOrderService {
-	s.clientAlgoID = &clientAlgoID
-	return s
-}
-
-// CancelAlgoOrderResp represents the response from canceling an algorithmic order.
-type CancelAlgoOrderResp struct {
-	AlgoId       int    `json:"algoId"`
-	ClientAlgoId string `json:"clientAlgoId"`
-	Code         string `json:"code"`
-	Message      string `json:"msg"`
-}
-
-// Do sends the request to cancel an algorithmic order.
-func (s *CancelAlgoOrderService) Do(ctx context.Context, opts ...RequestOption) (*CancelAlgoOrderResp, error) {
-	r := &request{
-		method:   http.MethodDelete,
-		endpoint: "/fapi/v1/algoOrder",
-		secType:  secTypeSigned,
+	if s.timeInForce != nil {
+		m["timeInForce"] = *s.timeInForce
 	}
-	param := map[string]any{}
-	if s.algoID != 0 {
-		param["algoId"] = s.algoID
+	if s.goodTillDate > 0 {
+		m["goodTillDate"] = s.goodTillDate
 	}
-	if s.clientAlgoID != nil {
-		param["clientAlgoId"] = *s.clientAlgoID
+	if s.reduceOnly != nil {
+		m["reduceOnly"] = *s.reduceOnly
 	}
-	r.setFormParams(param)
-	data, _, err := s.c.callAPI(ctx, r, opts...)
-	if err != nil {
-		return nil, err
-	}
-	res := &CancelAlgoOrderResp{}
-	err = json.Unmarshal(data, res)
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
-}
-
-// CancelAllAlgoOpenOrdersService cancels all open algorithmic orders.
-type CancelAllAlgoOpenOrdersService struct {
-	c      *Client
-	symbol string
-}
-
-// Symbol sets the trading symbol.
-func (s *CancelAllAlgoOpenOrdersService) Symbol(symbol string) *CancelAllAlgoOpenOrdersService {
-	s.symbol = symbol
-	return s
-}
-
-// CancelAllAlgoOpenOrdersResp represents the response from canceling all open algorithmic orders.
-type CancelAllAlgoOpenOrdersResp struct {
-	Code    int    `json:"code"`
-	Message string `json:"msg"`
-}
-
-// Do sends the request to cancel all open algorithmic orders.
-func (s *CancelAllAlgoOpenOrdersService) Do(ctx context.Context, opts ...RequestOption) error {
-	r := &request{
-		method:   http.MethodDelete,
-		endpoint: "/fapi/v1/algoOpenOrders",
-		secType:  secTypeSigned,
-	}
-	if s.symbol != "" {
-		r.setParam("symbol", s.symbol)
-	}
-	data, _, err := s.c.callAPI(ctx, r, opts...)
-	if err != nil {
-		return err
-	}
-	res := &CancelAllAlgoOpenOrdersResp{}
-	err = json.Unmarshal(data, res)
-	if err != nil {
-		return err
-	}
-	if res.Code != 200 {
-		return errors.New(res.Message)
-	}
-	return nil
-}
-
-// GetAlgoOrderService gets an algorithmic order.
-type GetAlgoOrderService struct {
-	c            *Client
-	algoId       *int64
-	clientAlgoId *string
-}
-
-// AlgoID sets the algorithmic order ID.
-func (s *GetAlgoOrderService) AlgoID(algoId int64) *GetAlgoOrderService {
-	s.algoId = &algoId
-	return s
-}
-
-// ClientAlgoID sets the client-defined algorithmic order ID.
-func (s *GetAlgoOrderService) ClientAlgoID(clientAlgoId string) *GetAlgoOrderService {
-	s.clientAlgoId = &clientAlgoId
-	return s
-}
-
-// GetAlgoOrderResp represents the response from getting an algorithmic order.
-type GetAlgoOrderResp struct {
-	AlgoId                  int64                   `json:"algoId"`
-	ClientAlgoId            string                  `json:"clientAlgoId"`
-	AlgoType                OrderAlgoType           `json:"algoType"`
-	OrderType               AlgoOrderType           `json:"orderType"`
-	Symbol                  string                  `json:"symbol"`
-	Side                    SideType                `json:"side"`
-	PositionSide            PositionSideType        `json:"positionSide"`
-	TimeInForce             TimeInForceType         `json:"timeInForce"`
-	Quantity                string                  `json:"quantity"`
-	AlgoStatus              AlgoOrderStatusType     `json:"algoStatus"`
-	ActualOrderId           string                  `json:"actualOrderId"`
-	ActualPrice             string                  `json:"actualPrice"`
-	TriggerPrice            string                  `json:"triggerPrice"`
-	Price                   string                  `json:"price"`
-	IcebergQuantity         *int64                  `json:"icebergQuantity,omitempty"`
-	TpTriggerPrice          string                  `json:"tpTriggerPrice"`
-	TpPrice                 string                  `json:"tpPrice"`
-	SlTriggerPrice          string                  `json:"slTriggerPrice"`
-	SlPrice                 string                  `json:"slPrice"`
-	TpOrderType             string                  `json:"tpOrderType"`
-	SelfTradePreventionMode SelfTradePreventionMode `json:"selfTradePreventionMode"`
-	WorkingType             WorkingType             `json:"workingType"`
-	PriceMatch              PriceMatchType          `json:"priceMatch"`
-	ClosePosition           bool                    `json:"closePosition"`
-	PriceProtect            bool                    `json:"priceProtect"`
-	ReduceOnly              bool                    `json:"reduceOnly"`
-	CreateTime              int64                   `json:"createTime"`
-	UpdateTime              int64                   `json:"updateTime"`
-	TriggerTime             int64                   `json:"triggerTime"`
-	GoodTillDate            int64                   `json:"goodTillDate"`
-}
-
-// Do sends the request to get an algorithmic order.
-func (s *GetAlgoOrderService) Do(ctx context.Context, opts ...RequestOption) (*GetAlgoOrderResp, error) {
-	r := &request{
-		method:   http.MethodGet,
-		endpoint: "/fapi/v1/algoOrder",
-		secType:  secTypeSigned,
-	}
-	if s.algoId != nil {
-		r.setParam("algoId", *s.algoId)
+	if s.price != nil {
+		m["price"] = *s.price
 	}
 	if s.clientAlgoId != nil {
-		r.setParam("clientAlgoId", *s.clientAlgoId)
+		m["clientAlgoId"] = *s.clientAlgoId
+	} else {
+		pre := "x-dNUwr2u2"
+		rnd := strings.ReplaceAll(fmt.Sprintf("%8x", rand.Uint32()), " ", "0")
+		tim := strconv.FormatInt(time.Now().UTC().UnixNano(), 36)
+		m["clientAlgoId"] = fmt.Sprintf("%s%s%s", pre, tim, rnd)
 	}
-	data, _, err := s.c.callAPI(ctx, r, opts...)
+	if s.triggerPrice != nil {
+		m["triggerPrice"] = *s.triggerPrice
+	}
+	if s.activatePrice != nil {
+		m["activatePrice"] = *s.activatePrice
+	}
+	if s.workingType != nil {
+		m["workingType"] = *s.workingType
+	}
+	if s.priceProtect != nil {
+		m["priceProtect"] = *s.priceProtect
+	}
+	if s.priceMatch != nil {
+		m["priceMatch"] = *s.priceMatch
+	}
+	if s.selfTradePreventionMode != nil {
+		m["selfTradePreventionMode"] = *s.selfTradePreventionMode
+	}
+	if s.callbackRate != nil {
+		m["callbackRate"] = *s.callbackRate
+	}
+	if s.closePosition != nil {
+		m["closePosition"] = *s.closePosition
+	}
+	r.setFormParams(m)
+	data, header, err = s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return []byte{}, &http.Header{}, err
+	}
+	return data, header, nil
+}
+
+// Do send request
+func (s *CreateAlgoOrderService) Do(ctx context.Context, opts ...RequestOption) (res *CreateOrderResponse, err error) {
+	data, header, err := s.createOrder(ctx, "/fapi/v1/order", opts...)
 	if err != nil {
 		return nil, err
 	}
-	res := &GetAlgoOrderResp{}
+	res = new(CreateOrderResponse)
 	err = json.Unmarshal(data, res)
+	res.RateLimitOrder10s = header.Get("X-Mbx-Order-Count-10s")
+	res.RateLimitOrder1m = header.Get("X-Mbx-Order-Count-1m")
+
 	if err != nil {
 		return nil, err
 	}
 	return res, nil
 }
 
-// ListOpenAlgoOrdersService lists all open algorithmic orders.
-type ListOpenAlgoOrdersService struct {
-	c        *Client
-	algoType *OrderAlgoType
-	symbol   *string
-	algoId   *int64
-}
-
-// AlgoType sets the algorithmic order type.
-func (s *ListOpenAlgoOrdersService) AlgoType(algoType OrderAlgoType) *ListOpenAlgoOrdersService {
-	s.algoType = &algoType
-	return s
-}
-
-// Symbol sets the trading symbol.
-func (s *ListOpenAlgoOrdersService) Symbol(symbol string) *ListOpenAlgoOrdersService {
-	s.symbol = &symbol
-	return s
-}
-
-// AlgoID sets the algorithmic order ID.
-func (s *ListOpenAlgoOrdersService) AlgoID(algoId int64) *ListOpenAlgoOrdersService {
-	s.algoId = &algoId
-	return s
-}
-
-// Do sends the request to list all open algorithmic orders.
-func (s *ListOpenAlgoOrdersService) Do(ctx context.Context, opts ...RequestOption) ([]GetAlgoOrderResp, error) {
-	r := &request{
-		method:   http.MethodGet,
-		endpoint: "/fapi/v1/openAlgoOrders",
-		secType:  secTypeSigned,
-	}
-	if s.algoType != nil {
-		r.setParam("algoType", string(*s.algoType))
-	}
-	if s.symbol != nil {
-		r.setParam("symbol", *s.symbol)
-	}
-	if s.algoId != nil {
-		r.setParam("algoId", *s.algoId)
-	}
-	data, _, err := s.c.callAPI(ctx, r, opts...)
-	if err != nil {
-		return nil, err
-	}
-	var res []GetAlgoOrderResp
-	err = json.Unmarshal(data, &res)
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
-}
-
-// ListAllAlgoOrdersService lists all historical algorithmic orders.
-type ListAllAlgoOrdersService struct {
-	c         *Client
-	symbol    string // required
-	algoId    *int64
-	startTime *int64
-	endTime   *int64
-	page      *int
-	limit     *int
-}
-
-// Symbol sets the trading symbol.
-func (s *ListAllAlgoOrdersService) Symbol(symbol string) *ListAllAlgoOrdersService {
-	s.symbol = symbol
-	return s
-}
-
-// AlgoID sets the algorithmic order ID.
-func (s *ListAllAlgoOrdersService) AlgoID(algoId int64) *ListAllAlgoOrdersService {
-	s.algoId = &algoId
-	return s
-}
-
-// StartTime sets the start time for filtering.
-func (s *ListAllAlgoOrdersService) StartTime(startTime int64) *ListAllAlgoOrdersService {
-	s.startTime = &startTime
-	return s
-}
-
-// EndTime sets the end time for filtering.
-func (s *ListAllAlgoOrdersService) EndTime(endTime int64) *ListAllAlgoOrdersService {
-	s.endTime = &endTime
-	return s
-}
-
-// Page sets the page number for pagination.
-func (s *ListAllAlgoOrdersService) Page(page int) *ListAllAlgoOrdersService {
-	s.page = &page
-	return s
-}
-
-// Limit sets the number of items per page.
-func (s *ListAllAlgoOrdersService) Limit(limit int) *ListAllAlgoOrdersService {
-	s.limit = &limit
-	return s
-}
-
-// Do sends the request to list all historical algorithmic orders.
-func (s *ListAllAlgoOrdersService) Do(ctx context.Context, opts ...RequestOption) ([]GetAlgoOrderResp, error) {
-	r := &request{
-		method:   http.MethodGet,
-		endpoint: "/fapi/v1/allAlgoOrders",
-		secType:  secTypeSigned,
-	}
-	r.setParam("symbol", s.symbol)
-	if s.algoId != nil {
-		r.setParam("algoId", *s.algoId)
-	}
-	if s.startTime != nil {
-		r.setParam("startTime", *s.startTime)
-	}
-	if s.endTime != nil {
-		r.setParam("endTime", *s.endTime)
-	}
-	if s.page != nil {
-		r.setParam("page", *s.page)
-	}
-	if s.limit != nil {
-		r.setParam("limit", *s.limit)
-	}
-	data, _, err := s.c.callAPI(ctx, r, opts...)
-	if err != nil {
-		return nil, err
-	}
-	var res []GetAlgoOrderResp
-	err = json.Unmarshal(data, &res)
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
-
+// CreateOrderResponse define create order response
+type CreateAlgoOrderResponse struct {
+	Symbol                  string                      `json:"symbol"`
+	OrderID                 int64                       `json:"orderId"`
+	ClientOrderID           string                      `json:"clientOrderId"`
+	Price                   float64                     `json:"price,string"`
+	OrigQuantity            float64                     `json:"origQty,string"`
+	ExecutedQuantity        float64                     `json:"executedQty,string"`
+	CumQuote                float64                     `json:"cumQuote,string"`
+	ReduceOnly              bool                        `json:"reduceOnly"`
+	Status                  OrderStatusType             `json:"status"`
+	StopPrice               float64                     `json:"stopPrice,string"`
+	TimeInForce             TimeInForceType             `json:"timeInForce"`
+	Type                    OrderType                   `json:"type"`
+	OrigType                OrderType                   `json:"origType"`
+	Side                    SideType                    `json:"side"`
+	UpdateTime              int64                       `json:"updateTime"`
+	WorkingType             WorkingType                 `json:"workingType"`
+	ActivatePrice           float64                     `json:"activatePrice,string"`
+	PriceRate               float64                     `json:"priceRate,string"`
+	AvgPrice                float64                     `json:"avgPrice,string"`
+	PositionSide            PositionSideType            `json:"positionSide"`
+	ClosePosition           bool                        `json:"closePosition"`
+	PriceProtect            bool                        `json:"priceProtect"`
+	PriceMatch              PriceMatchType              `json:"priceMatch"`
+	SelfTradePreventionMode SelfTradePreventionModeType `json:"selfTradePreventionMode"`
+	GoodTillDate            int64                       `json:"goodTillDate"`
+	RateLimitOrder10s       string                      `json:"rateLimitOrder10s,omitempty"`
+	RateLimitOrder1m        string                      `json:"rateLimitOrder1m,omitempty"`
 }
