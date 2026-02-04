@@ -219,7 +219,7 @@ func (s *CreateAlgoOrderService) createOrder(ctx context.Context, endpoint strin
 
 // Do send request
 func (s *CreateAlgoOrderService) Do(ctx context.Context, opts ...RequestOption) (res *CreateOrderResponse, err error) {
-	data, header, err := s.createOrder(ctx, "/fapi/v1/order", opts...)
+	data, header, err := s.createOrder(ctx, "/fapi/v1/algoOrder", opts...)
 	if err != nil {
 		return nil, err
 	}
