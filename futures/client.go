@@ -199,14 +199,22 @@ func currentTimestamp() int64 {
 	return int64(time.Nanosecond) * time.Now().UnixNano() / int64(time.Millisecond)
 }
 
+// getApiEndpoint return the base endpoint of the WS according the UseTestnet flag
+func getApiEndpoint() string {
+	if UseTestnet {
+		return baseApiTestnetUrl
+	}
+	return baseApiMainUrl
+}
+
 // NewClient initialize an API client instance with API key and secret key.
 // You should always call this function before using this SDK.
 // Services will be created by the form client.NewXXXService().
-func NewClient(apiKey, secretKey string, useTestnet bool) *Client {
+func NewClient(apiKey, secretKey string) *Client {
 	return &Client{
 		APIKey:     apiKey,
 		SecretKey:  secretKey,
-		UseTestnet: useTestnet,
+		BaseURL:    getApiEndpoint(),
 		UserAgent:  "Binance/golang",
 		HTTPClient: http.DefaultClient,
 		Logger:     log.New(os.Stderr, "Binance-golang ", log.LstdFlags),
@@ -214,7 +222,7 @@ func NewClient(apiKey, secretKey string, useTestnet bool) *Client {
 }
 
 // NewProxiedClient passing a proxy url
-func NewProxiedClient(apiKey, secretKey, proxyUrl string, useTestnet bool) *Client {
+func NewProxiedClient(apiKey, secretKey, proxyUrl string) *Client {
 	proxy, err := url.Parse(proxyUrl)
 	if err != nil {
 		log.Fatal(err)
@@ -224,10 +232,10 @@ func NewProxiedClient(apiKey, secretKey, proxyUrl string, useTestnet bool) *Clie
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 	return &Client{
-		APIKey:     apiKey,
-		SecretKey:  secretKey,
-		UseTestnet: useTestnet,
-		UserAgent:  "Binance/golang",
+		APIKey:    apiKey,
+		SecretKey: secretKey,
+		BaseURL:   getApiEndpoint(),
+		UserAgent: "Binance/golang",
 		HTTPClient: &http.Client{
 			Transport: tr,
 		},
@@ -241,21 +249,13 @@ type doFunc func(req *http.Request) (*http.Response, error)
 type Client struct {
 	APIKey     string
 	SecretKey  string
-	UseTestnet bool
+	BaseURL    string
 	UserAgent  string
 	HTTPClient *http.Client
 	Debug      bool
 	Logger     *log.Logger
 	TimeOffset int64
 	do         doFunc
-}
-
-// getApiEndpoint return the base endpoint of the WS according the UseTestnet flag
-func (c *Client) getApiEndpoint() string {
-	if c.UseTestnet {
-		return baseApiTestnetUrl
-	}
-	return baseApiMainUrl
 }
 
 func (c *Client) debug(format string, v ...interface{}) {
@@ -274,9 +274,7 @@ func (c *Client) parseRequest(r *request, opts ...RequestOption) (err error) {
 		return err
 	}
 
-	baseUrl := c.getApiEndpoint()
-
-	fullURL := fmt.Sprintf("%s%s", baseUrl, r.endpoint)
+	fullURL := fmt.Sprintf("%s%s", c.BaseURL, r.endpoint)
 	if r.recvWindow > 0 {
 		r.setParam(recvWindowKey, r.recvWindow)
 	}
