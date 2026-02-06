@@ -304,6 +304,7 @@ type AlgoOrder struct {
 	Symbol                  string                      `json:"symbol"`
 	Side                    SideType                    `json:"side"`
 	PositionSide            PositionSideType            `json:"positionSide"`
+	Type                    OrderType                   `json:"type"`
 	TimeInForce             TimeInForceType             `json:"timeInForce"`
 	Quantity                float64                     `json:"quantity,string"`
 	AlgoStatus              string                      `json:"algoStatus"`
