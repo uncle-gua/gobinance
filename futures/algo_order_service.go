@@ -325,3 +325,63 @@ type AlgoOrder struct {
 	RateLimitOrder10s       string                      `json:"rateLimitOrder10s,omitempty"`
 	RateLimitOrder1m        string                      `json:"rateLimitOrder1m,omitempty"`
 }
+
+// CancelOrderService cancel an order
+type CancelAlgoOrderService struct {
+	c            *Client
+	symbol       string
+	algoId       *int64
+	clientAlgoId *string
+}
+
+// Symbol set symbol
+func (s *CancelAlgoOrderService) Symbol(symbol string) *CancelAlgoOrderService {
+	s.symbol = symbol
+	return s
+}
+
+// OrderID set orderID
+func (s *CancelAlgoOrderService) AlgoId(algoId int64) *CancelAlgoOrderService {
+	s.algoId = &algoId
+	return s
+}
+
+// OrigClientOrderID set origClientOrderID
+func (s *CancelAlgoOrderService) ClientAlgoId(clientAlgoId string) *CancelAlgoOrderService {
+	s.clientAlgoId = &clientAlgoId
+	return s
+}
+
+// Do send request
+func (s *CancelAlgoOrderService) Do(ctx context.Context, opts ...RequestOption) (res *CancelAlgoOrderResponse, err error) {
+	r := &request{
+		method:   http.MethodDelete,
+		endpoint: "/fapi/v1/algoOrder",
+		secType:  secTypeSigned,
+	}
+	r.setFormParam("symbol", s.symbol)
+	if s.algoId != nil {
+		r.setFormParam("algoId", *s.algoId)
+	}
+	if s.clientAlgoId != nil {
+		r.setFormParam("clientAlgoId", *s.clientAlgoId)
+	}
+	data, _, err := s.c.callAPI(ctx, r, opts...)
+	if err != nil {
+		return nil, err
+	}
+	res = new(CancelAlgoOrderResponse)
+	err = json.Unmarshal(data, res)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+// CancelOrderResponse define response of canceling order
+type CancelAlgoOrderResponse struct {
+	Code         int64  `json:"code,string"`
+	Msg          string `json:"msg"`
+	AlgoId       int64  `json:"algoId"`
+	ClientAlgoId string `json:"clientAlgoId"`
+}
