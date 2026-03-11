@@ -206,14 +206,6 @@ func currentTimestamp() int64 {
 	return int64(time.Nanosecond) * time.Now().UnixNano() / int64(time.Millisecond)
 }
 
-// getApiEndpoint return the base endpoint of the WS according the UseTestnet flag
-func getApiEndpoint() string {
-	if UseTestnet {
-		return baseApiTestnetUrl
-	}
-	return baseApiMainUrl
-}
-
 // NewClient initialize an API client instance with API key and secret key.
 // You should always call this function before using this SDK.
 // Services will be created by the form client.NewXXXService().
@@ -221,7 +213,6 @@ func NewClient(apiKey, secretKey string) *Client {
 	return &Client{
 		APIKey:     apiKey,
 		SecretKey:  secretKey,
-		BaseURL:    getApiEndpoint(),
 		UserAgent:  "Binance/golang",
 		HTTPClient: http.DefaultClient,
 		Logger:     log.New(os.Stderr, "Binance-golang ", log.LstdFlags),
@@ -241,7 +232,6 @@ func NewProxiedClient(apiKey, secretKey, proxyUrl string) *Client {
 	return &Client{
 		APIKey:    apiKey,
 		SecretKey: secretKey,
-		BaseURL:   getApiEndpoint(),
 		UserAgent: "Binance/golang",
 		HTTPClient: &http.Client{
 			Transport: tr,
@@ -256,9 +246,9 @@ type doFunc func(req *http.Request) (*http.Response, error)
 type Client struct {
 	APIKey     string
 	SecretKey  string
-	BaseURL    string
 	UserAgent  string
 	HTTPClient *http.Client
+	UseTestnet bool
 	Debug      bool
 	Logger     *log.Logger
 	TimeOffset int64
@@ -272,6 +262,11 @@ func (c *Client) debug(format string, v ...interface{}) {
 }
 
 func (c *Client) parseRequest(r *request, opts ...RequestOption) (err error) {
+	baseUrl := baseApiMainUrl
+	if c.UseTestnet {
+		baseUrl = baseApiTestnetUrl
+	}
+
 	// set request options from user
 	for _, opt := range opts {
 		opt(r)
@@ -281,7 +276,7 @@ func (c *Client) parseRequest(r *request, opts ...RequestOption) (err error) {
 		return err
 	}
 
-	fullURL := fmt.Sprintf("%s%s", c.BaseURL, r.endpoint)
+	fullURL := fmt.Sprintf("%s%s", baseUrl, r.endpoint)
 	if r.recvWindow > 0 {
 		r.setParam(recvWindowKey, r.recvWindow)
 	}
