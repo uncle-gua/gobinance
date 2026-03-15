@@ -248,7 +248,7 @@ type Client struct {
 	SecretKey  string
 	UserAgent  string
 	HTTPClient *http.Client
-	UseTestnet bool
+	Testnet    bool
 	Debug      bool
 	Logger     *log.Logger
 	TimeOffset int64
@@ -263,7 +263,7 @@ func (c *Client) debug(format string, v ...interface{}) {
 
 func (c *Client) parseRequest(r *request, opts ...RequestOption) (err error) {
 	baseUrl := baseApiMainUrl
-	if c.UseTestnet {
+	if c.Testnet {
 		baseUrl = baseApiTestnetUrl
 	}
 
@@ -322,6 +322,11 @@ func (c *Client) parseRequest(r *request, opts ...RequestOption) (err error) {
 	r.header = header
 	r.body = body
 	return nil
+}
+
+func (c *Client) UseTestnet(testnet bool) *Client {
+	c.Testnet = testnet
+	return c
 }
 
 func (c *Client) callAPI(ctx context.Context, r *request, opts ...RequestOption) (data []byte, header *http.Header, err error) {
