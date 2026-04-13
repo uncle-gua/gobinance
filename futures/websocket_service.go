@@ -492,12 +492,12 @@ type WsLiquidationOrder struct {
 	Side                 SideType        `json:"S"`
 	OrderType            OrderType       `json:"o"`
 	TimeInForce          TimeInForceType `json:"f"`
-	OrigQuantity         string          `json:"q"`
-	Price                string          `json:"p"`
-	AvgPrice             string          `json:"ap"`
+	OrigQuantity         float64         `json:"q,string"`
+	Price                float64         `json:"p,string"`
+	AvgPrice             float64         `json:"ap,string"`
 	OrderStatus          OrderStatusType `json:"X"`
-	LastFilledQty        string          `json:"l"`
-	AccumulatedFilledQty string          `json:"z"`
+	LastFilledQty        float64         `json:"l,string"`
+	AccumulatedFilledQty float64         `json:"z,string"`
 	TradeTime            int64           `json:"T"`
 }
 
