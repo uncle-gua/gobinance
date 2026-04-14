@@ -119,8 +119,9 @@ func (s *OpenInterestStatisticsService) Do(ctx context.Context, opts ...RequestO
 }
 
 type OpenInterestStatistic struct {
-	Symbol               string `json:"symbol"`
-	SumOpenInterest      string `json:"sumOpenInterest"`
-	SumOpenInterestValue string `json:"sumOpenInterestValue"`
-	Timestamp            int64  `json:"timestamp"`
+	Symbol               string  `json:"symbol"`
+	SumOpenInterest      float64 `json:"sumOpenInterest,string"`
+	SumOpenInterestValue float64 `json:"sumOpenInterestValue,string"`
+	CMCCirculatingSupply float64 `json:"CMCCirculatingSupply,string"`
+	Timestamp            int64   `json:"timestamp"`
 }
