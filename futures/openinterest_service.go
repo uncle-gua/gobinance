@@ -39,9 +39,9 @@ func (s *GetOpenInterestService) Do(ctx context.Context, opts ...RequestOption) 
 }
 
 type OpenInterest struct {
-	OpenInterest string `json:"openInterest"`
-	Symbol       string `json:"symbol"`
-	Time         int64  `json:"time"`
+	OpenInterest float64 `json:"openInterest,string"`
+	Symbol       string  `json:"symbol"`
+	Time         int64   `json:"time"`
 }
 
 // OpenInterestStatisticsService list open history data of a symbol.
